@@ -1116,6 +1116,31 @@ body {
         margin-bottom: 1rem;
         padding: 1rem;
     }
+    
+    /* Stack experience card headers vertically on mobile */
+    .card-header {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+    
+    .card-header h4 {
+        font-size: 1.2rem;
+        margin-bottom: 0.2rem;
+        line-height: 1.3;
+    }
+    
+    .company {
+        font-size: 1rem;
+        margin-bottom: 0.2rem;
+        line-height: 1.3;
+    }
+    
+    .period {
+        font-size: 0.9rem;
+        opacity: 0.8;
+        line-height: 1.3;
+    }
 }
 
 /* Enhanced Scrollbar */
