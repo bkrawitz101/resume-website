@@ -1048,11 +1048,12 @@ body {
     }
     
     .title {
-        font-size: 1.2rem;
-        line-height: 1.4;
+        font-size: 0.9rem;
+        line-height: 1.6;
         word-wrap: break-word;
         overflow-wrap: break-word;
         hyphens: auto;
+        padding: 0 10px;
     }
     
     .contact-brief {
@@ -1073,6 +1074,48 @@ body {
     }
     
 
+}
+
+/* Mobile-specific styles */
+@media (max-width: 480px) {
+    .title {
+        font-size: 0.7rem;
+        line-height: 1.8;
+        padding: 0 15px;
+    }
+    
+    .header-text {
+        padding: 0 10px;
+    }
+    
+    .name {
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+    }
+    
+    .nav-tabs {
+        gap: 0.5rem;
+    }
+    
+    .nav-tab {
+        padding: 0.8rem 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .main-content {
+        padding: 1rem 0.5rem;
+    }
+    
+    .section-header h2 {
+        font-size: 2rem;
+    }
+    
+    .experience-card,
+    .project-card,
+    .education-card {
+        margin-bottom: 1rem;
+        padding: 1rem;
+    }
 }
 
 /* Enhanced Scrollbar */
@@ -1216,6 +1259,10 @@ body {
     background: #000;
     transition: opacity 2s ease-in-out;
     display: none;
+}
+
+.video-intro.fade-out {
+    opacity: 0;
 }
 
 .video-intro.fade-out {

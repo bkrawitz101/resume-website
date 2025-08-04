@@ -306,14 +306,15 @@ function transitionToMainSite() {
     const audioBtn = document.getElementById('playAudioBtn');
     
     if (videoIntro) {
+        console.log('🎬 Starting transition to main site');
+        
         // Fade out video intro
         videoIntro.classList.add('fade-out');
         
         // After fade animation, hide video intro
         setTimeout(() => {
             videoIntro.style.display = 'none';
-            
-            // Don't automatically mark audio as playing - let user control it
+            videoIntro.classList.remove('fade-out');
             console.log('🎬 Transition to main site complete');
         }, 2000); // Match the CSS transition duration
     }
@@ -426,6 +427,10 @@ function initInitiateSequence() {
                 
                 // Start video
                 if (introVideo) {
+                    // Set video properties for mobile
+                    introVideo.muted = true; // Required for mobile autoplay
+                    introVideo.playsInline = true; // Prevents fullscreen on mobile
+                    
                     introVideo.play().then(() => {
                         console.log('🎬 Video started');
                         
@@ -443,6 +448,10 @@ function initInitiateSequence() {
                         }
                     }).catch((error) => {
                         console.log('🎬 Video failed to start:', error);
+                        // Fallback: if video fails, still show the main site
+                        setTimeout(() => {
+                            transitionToMainSite();
+                        }, 1000);
                     });
                 }
             });
