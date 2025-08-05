@@ -526,6 +526,14 @@ function startVideoSequence() {
         console.log('🎬 Showing video intro');
         videoIntro.style.display = 'block';
         videoIntro.style.opacity = '1';
+        videoIntro.style.visibility = 'visible';
+        videoIntro.style.zIndex = '9999';
+        
+        // Mobile-specific debugging
+        console.log('🎬 Video intro display:', videoIntro.style.display);
+        console.log('🎬 Video intro opacity:', videoIntro.style.opacity);
+        console.log('🎬 Video intro visibility:', videoIntro.style.visibility);
+        console.log('🎬 Video intro z-index:', videoIntro.style.zIndex);
     } else {
         console.log('❌ Video intro element not found');
     }
@@ -535,6 +543,15 @@ function startVideoSequence() {
         // Set video properties for mobile
         introVideo.muted = true; // Required for mobile autoplay
         introVideo.playsInline = true; // Prevents fullscreen on mobile
+        
+        // Ensure video overlay is visible on mobile
+        const videoOverlay = videoIntro.querySelector('.video-overlay');
+        if (videoOverlay) {
+            videoOverlay.style.display = 'flex';
+            videoOverlay.style.visibility = 'visible';
+            videoOverlay.style.zIndex = '9999';
+            console.log('🎬 Video overlay made visible');
+        }
         
         introVideo.play().then(() => {
             console.log('🎬 Video started');
@@ -567,6 +584,22 @@ function startVideoSequence() {
                 transitionToMainSite();
             }, 1000);
         });
+        
+        // Mobile fallback: ensure video intro is visible after a delay
+        setTimeout(() => {
+            if (videoIntro && videoIntro.style.display !== 'none') {
+                console.log('🎬 Mobile fallback: Ensuring video intro is visible');
+                videoIntro.style.display = 'block';
+                videoIntro.style.opacity = '1';
+                videoIntro.style.visibility = 'visible';
+                
+                const videoOverlay = videoIntro.querySelector('.video-overlay');
+                if (videoOverlay) {
+                    videoOverlay.style.display = 'flex';
+                    videoOverlay.style.visibility = 'visible';
+                }
+            }
+        }, 500);
     }
 }
 
