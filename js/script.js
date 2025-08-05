@@ -1211,6 +1211,12 @@ function initClickableEntries() {
                 const chevron = clickIndicator.querySelector('i');
                 chevron.className = 'fas fa-chevron-up';
                 
+                // Check if this is a category (timeline-category) - don't do speech/typing for categories
+                if (entry.classList.contains('timeline-category')) {
+                    // For categories, just expand/collapse without speech or typing
+                    return;
+                }
+                
                 // Only start typing if there's a typing-text element (mission statement)
                 if (typingText) {
                     // Clear any existing text and cursor
@@ -1220,87 +1226,63 @@ function initClickableEntries() {
                     // Play typing sound
                     playTypingSound();
                 } else {
-                    // For experience cards, type and speak bullet points (chevron click)
+                    // For experience cards, first read full job info, then type and speak bullet points
                     const bulletsList = content.querySelector('.experience-bullets');
                     if (bulletsList && entry.classList.contains('experience-card')) {
+                        // Get all job information
+                        const titleElement = entry.querySelector('h4');
+                        const companyElement = entry.querySelector('.company');
+                        const periodElement = entry.querySelector('.period');
+                        
+                        const title = titleElement ? titleElement.textContent : '';
+                        const company = companyElement ? companyElement.textContent : '';
+                        const period = periodElement ? periodElement.textContent : '';
+                        
+                        // Combine all job info for speech
+                        const fullJobInfo = `${title} at ${company}, ${period}`;
+                        
                         // Hide all bullet points initially
                         const bullets = bulletsList.querySelectorAll('li');
                         bullets.forEach(bullet => {
                             bullet.style.opacity = '0';
                         });
                         
-                        // Type out bullet points one letter at a time with speech
-                        let bulletIndex = 0;
-                        let letterIndex = 0;
-                        let currentBullet = null;
-                        let originalText = '';
-                        let currentSpeechUtterance = null;
-                        
-                        const typeBulletPoints = () => {
-                            if (bulletIndex < bullets.length) {
-                                if (!currentBullet) {
-                                    // Start new bullet point
-                                    currentBullet = bullets[bulletIndex];
-                                    originalText = currentBullet.textContent;
-                                    currentBullet.textContent = '';
-                                    currentBullet.style.opacity = '1';
-                                    letterIndex = 0;
-                                    
-                                    // Start speaking this bullet point
-                                    if ('speechSynthesis' in window && speechEnabled) {
-                                        const speechSynth = window.speechSynthesis;
-                                        const speechUtterance = new SpeechSynthesisUtterance(originalText);
-                                        speechUtterance.rate = 0.5;
-                                        speechUtterance.pitch = 0.6;
-                                        speechUtterance.volume = 1.0;
-                                        
-                                        // Set voice
-                                        const voices = speechSynth.getVoices();
-                                        const trinoidsVoice = voices.find(voice => voice.name.includes('Trinoids'));
-                                        if (trinoidsVoice) {
-                                            speechUtterance.voice = trinoidsVoice;
-                                        }
-                                        
-                                        // Track speech
-                                        speechUtterance.onstart = () => {
-                                            isCurrentlySpeaking = true;
-                                            currentSpeechUtterance = speechUtterance;
-                                            console.log('🌿 Bullet point speech started:', originalText.substring(0, 50));
-                                        };
-                                        
-                                        speechUtterance.onend = () => {
-                                            isCurrentlySpeaking = false;
-                                            currentSpeechUtterance = null;
-                                            console.log('🌿 Bullet point speech ended');
-                                            
-                                            // Move to next bullet point after speech ends
-                                            bulletIndex++;
-                                            currentBullet = null;
-                                            if (bulletIndex < bullets.length) {
-                                                setTimeout(typeBulletPoints, 300); // Pause between bullet points
-                                            }
-                                        };
-                                        
-                                        speechSynth.speak(speechUtterance);
-                                    }
-                                }
-                                
-                                if (letterIndex < originalText.length) {
-                                    // Type next letter
-                                    currentBullet.textContent += originalText.charAt(letterIndex);
-                                    letterIndex++;
-                                    
-                                    // Play typing sound
-                                    playTypingSound();
-                                    
-                                    // Continue typing this bullet point
-                                    setTimeout(typeBulletPoints, 50); // Faster typing speed
-                                }
+                        // First read the full job info, then start bullet points
+                        if ('speechSynthesis' in window && speechEnabled && fullJobInfo) {
+                            const speechSynth = window.speechSynthesis;
+                            const jobInfoUtterance = new SpeechSynthesisUtterance(fullJobInfo);
+                            jobInfoUtterance.rate = 0.5;
+                            jobInfoUtterance.pitch = 0.6;
+                            jobInfoUtterance.volume = 1.0;
+                            
+                            // Set voice
+                            const voices = speechSynth.getVoices();
+                            const trinoidsVoice = voices.find(voice => voice.name.includes('Trinoids'));
+                            if (trinoidsVoice) {
+                                jobInfoUtterance.voice = trinoidsVoice;
                             }
-                        };
-                        
-                        // Start typing bullet points immediately
-                        setTimeout(typeBulletPoints, 200);
+                            
+                            // Track job info speech
+                            jobInfoUtterance.onstart = () => {
+                                isCurrentlySpeaking = true;
+                                currentSpeechUtterance = jobInfoUtterance;
+                                console.log('🌿 Job info speech started:', fullJobInfo);
+                            };
+                            
+                            jobInfoUtterance.onend = () => {
+                                isCurrentlySpeaking = false;
+                                currentSpeechUtterance = null;
+                                console.log('🌿 Job info speech ended, starting bullet points');
+                                
+                                // Start bullet points after job info is read
+                                startBulletPointSequence(bullets);
+                            };
+                            
+                            speechSynth.speak(jobInfoUtterance);
+                        } else {
+                            // If no speech synthesis or job info, start bullet points immediately
+                            startBulletPointSequence(bullets);
+                        }
                     }
                 }
                 
@@ -1341,6 +1323,12 @@ function initClickableEntries() {
                 const chevron = clickIndicator.querySelector('i');
                 chevron.className = 'fas fa-chevron-up';
                 
+                // Check if this is a category (timeline-category) - don't do speech/typing for categories
+                if (entry.classList.contains('timeline-category')) {
+                    // For categories, just expand/collapse without speech or typing
+                    return;
+                }
+                
                 // Only start typing if there's a typing-text element (header click)
                 if (typingText) {
                     // Clear any existing text and cursor
@@ -1350,87 +1338,63 @@ function initClickableEntries() {
                     // Play typing sound
                     playTypingSound();
                 } else {
-                    // For experience cards, type and speak bullet points (header click)
+                    // For experience cards, first read full job info, then type and speak bullet points
                     const bulletsList = content.querySelector('.experience-bullets');
                     if (bulletsList && entry.classList.contains('experience-card')) {
+                        // Get all job information
+                        const titleElement = entry.querySelector('h4');
+                        const companyElement = entry.querySelector('.company');
+                        const periodElement = entry.querySelector('.period');
+                        
+                        const title = titleElement ? titleElement.textContent : '';
+                        const company = companyElement ? companyElement.textContent : '';
+                        const period = periodElement ? periodElement.textContent : '';
+                        
+                        // Combine all job info for speech
+                        const fullJobInfo = `${title} at ${company}, ${period}`;
+                        
                         // Hide all bullet points initially
                         const bullets = bulletsList.querySelectorAll('li');
                         bullets.forEach(bullet => {
                             bullet.style.opacity = '0';
                         });
                         
-                        // Type out bullet points one letter at a time with speech
-                        let bulletIndex = 0;
-                        let letterIndex = 0;
-                        let currentBullet = null;
-                        let originalText = '';
-                        let currentSpeechUtterance = null;
-                        
-                        const typeBulletPoints = () => {
-                            if (bulletIndex < bullets.length) {
-                                if (!currentBullet) {
-                                    // Start new bullet point
-                                    currentBullet = bullets[bulletIndex];
-                                    originalText = currentBullet.textContent;
-                                    currentBullet.textContent = '';
-                                    currentBullet.style.opacity = '1';
-                                    letterIndex = 0;
-                                    
-                                    // Start speaking this bullet point
-                                    if ('speechSynthesis' in window && speechEnabled) {
-                                        const speechSynth = window.speechSynthesis;
-                                        const speechUtterance = new SpeechSynthesisUtterance(originalText);
-                                        speechUtterance.rate = 0.5;
-                                        speechUtterance.pitch = 0.6;
-                                        speechUtterance.volume = 1.0;
-                                        
-                                        // Set voice
-                                        const voices = speechSynth.getVoices();
-                                        const trinoidsVoice = voices.find(voice => voice.name.includes('Trinoids'));
-                                        if (trinoidsVoice) {
-                                            speechUtterance.voice = trinoidsVoice;
-                                        }
-                                        
-                                        // Track speech
-                                        speechUtterance.onstart = () => {
-                                            isCurrentlySpeaking = true;
-                                            currentSpeechUtterance = speechUtterance;
-                                            console.log('🌿 Bullet point speech started:', originalText.substring(0, 50));
-                                        };
-                                        
-                                        speechUtterance.onend = () => {
-                                            isCurrentlySpeaking = false;
-                                            currentSpeechUtterance = null;
-                                            console.log('🌿 Bullet point speech ended');
-                                            
-                                            // Move to next bullet point after speech ends
-                                            bulletIndex++;
-                                            currentBullet = null;
-                                            if (bulletIndex < bullets.length) {
-                                                setTimeout(typeBulletPoints, 300); // Pause between bullet points
-                                            }
-                                        };
-                                        
-                                        speechSynth.speak(speechUtterance);
-                                    }
-                                }
-                                
-                                if (letterIndex < originalText.length) {
-                                    // Type next letter
-                                    currentBullet.textContent += originalText.charAt(letterIndex);
-                                    letterIndex++;
-                                    
-                                    // Play typing sound
-                                    playTypingSound();
-                                    
-                                    // Continue typing this bullet point
-                                    setTimeout(typeBulletPoints, 50); // Faster typing speed
-                                }
+                        // First read the full job info, then start bullet points
+                        if ('speechSynthesis' in window && speechEnabled && fullJobInfo) {
+                            const speechSynth = window.speechSynthesis;
+                            const jobInfoUtterance = new SpeechSynthesisUtterance(fullJobInfo);
+                            jobInfoUtterance.rate = 0.5;
+                            jobInfoUtterance.pitch = 0.6;
+                            jobInfoUtterance.volume = 1.0;
+                            
+                            // Set voice
+                            const voices = speechSynth.getVoices();
+                            const trinoidsVoice = voices.find(voice => voice.name.includes('Trinoids'));
+                            if (trinoidsVoice) {
+                                jobInfoUtterance.voice = trinoidsVoice;
                             }
-                        };
-                        
-                        // Start typing bullet points immediately
-                        setTimeout(typeBulletPoints, 200);
+                            
+                            // Track job info speech
+                            jobInfoUtterance.onstart = () => {
+                                isCurrentlySpeaking = true;
+                                currentSpeechUtterance = jobInfoUtterance;
+                                console.log('🌿 Job info speech started:', fullJobInfo);
+                            };
+                            
+                            jobInfoUtterance.onend = () => {
+                                isCurrentlySpeaking = false;
+                                currentSpeechUtterance = null;
+                                console.log('🌿 Job info speech ended, starting bullet points');
+                                
+                                // Start bullet points after job info is read
+                                startBulletPointSequence(bullets);
+                            };
+                            
+                            speechSynth.speak(jobInfoUtterance);
+                        } else {
+                            // If no speech synthesis or job info, start bullet points immediately
+                            startBulletPointSequence(bullets);
+                        }
                     }
                 }
                 
@@ -1452,6 +1416,81 @@ function initClickableEntries() {
             }
         });
     });
+}
+
+// Function to handle bullet point sequence
+function startBulletPointSequence(bullets) {
+    let bulletIndex = 0;
+    let letterIndex = 0;
+    let currentBullet = null;
+    let originalText = '';
+    let currentSpeechUtterance = null;
+    
+    const typeBulletPoints = () => {
+        if (bulletIndex < bullets.length) {
+            if (!currentBullet) {
+                // Start new bullet point
+                currentBullet = bullets[bulletIndex];
+                originalText = currentBullet.textContent;
+                currentBullet.textContent = '';
+                currentBullet.style.opacity = '1';
+                letterIndex = 0;
+                
+                // Start speaking this bullet point
+                if ('speechSynthesis' in window && speechEnabled) {
+                    const speechSynth = window.speechSynthesis;
+                    const speechUtterance = new SpeechSynthesisUtterance(originalText);
+                    speechUtterance.rate = 0.5;
+                    speechUtterance.pitch = 0.6;
+                    speechUtterance.volume = 1.0;
+                    
+                    // Set voice
+                    const voices = speechSynth.getVoices();
+                    const trinoidsVoice = voices.find(voice => voice.name.includes('Trinoids'));
+                    if (trinoidsVoice) {
+                        speechUtterance.voice = trinoidsVoice;
+                    }
+                    
+                    // Track speech
+                    speechUtterance.onstart = () => {
+                        isCurrentlySpeaking = true;
+                        currentSpeechUtterance = speechUtterance;
+                        console.log('🌿 Bullet point speech started:', originalText.substring(0, 50));
+                    };
+                    
+                    speechUtterance.onend = () => {
+                        isCurrentlySpeaking = false;
+                        currentSpeechUtterance = null;
+                        console.log('🌿 Bullet point speech ended');
+                        
+                        // Move to next bullet point after speech ends
+                        bulletIndex++;
+                        currentBullet = null;
+                        if (bulletIndex < bullets.length) {
+                            setTimeout(typeBulletPoints, 300); // Pause between bullet points
+                        }
+                    };
+                    
+                    speechSynth.speak(speechUtterance);
+                }
+            }
+            
+            if (letterIndex < originalText.length) {
+                // Type next letter
+                currentBullet.textContent += originalText.charAt(letterIndex);
+                letterIndex++;
+                
+                // Play typing sound
+                playTypingSound();
+                
+                // Continue typing this bullet point
+                setTimeout(typeBulletPoints, 50); // Faster typing speed
+            }
+        }
+    };
+    
+    // Start typing bullet points immediately
+    setTimeout(typeBulletPoints, 200);
 }
 
 // Typing effect function with speech synthesis
