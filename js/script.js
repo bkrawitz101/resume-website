@@ -166,7 +166,7 @@ function initVideoIntro() {
             }
         });
         
-        // Handle video end
+        // Handle video end - transition to main site
         introVideo.addEventListener('ended', function() {
             console.log('🎬 Video intro ended, transitioning to main site');
             transitionToMainSite();
@@ -427,54 +427,350 @@ function initInitiateSequence() {
             flashingBox.addEventListener('click', function() {
                 console.log('🚀 Initiate sequence clicked');
                 
-                // Hide the initiate sequence
-                console.log('🎬 Hiding initiate sequence');
+                // Get button position BEFORE hiding it for proper supernova centering
+                const buttonRect = flashingBox.getBoundingClientRect();
+                const centerX = buttonRect.left + buttonRect.width / 2;
+                const centerY = buttonRect.top + buttonRect.height / 2;
+                
+                // Hide the initiate sequence immediately when supernova starts
+                console.log('🎬 Hiding initiate sequence immediately');
                 initiateSequence.style.opacity = '0';
-                setTimeout(() => {
-                    initiateSequence.style.display = 'none';
-                    console.log('🎬 Initiate sequence hidden');
-                }, 1000);
+                initiateSequence.style.display = 'none';
                 
-                // Show video intro
-                if (videoIntro) {
-                    console.log('🎬 Showing video intro');
-                    videoIntro.style.display = 'block';
-                    videoIntro.style.opacity = '1';
-                } else {
-                    console.log('❌ Video intro element not found');
-                }
+                // Create supernova explosion effect with proper centering
+                createSupernovaEffect(centerX, centerY);
                 
-                // Start video
-                if (introVideo) {
-                    // Set video properties for mobile
-                    introVideo.muted = true; // Required for mobile autoplay
-                    introVideo.playsInline = true; // Prevents fullscreen on mobile
+                // Voice announcement with proper timing
+                if ('speechSynthesis' in window) {
+                    const speechSynth = window.speechSynthesis;
+                    const speechUtterance = new SpeechSynthesisUtterance('Sequence activated');
+                    speechUtterance.rate = 0.8;
+                    speechUtterance.pitch = 0.8;
+                    speechUtterance.volume = 1.0;
                     
-                    introVideo.play().then(() => {
-                        console.log('🎬 Video started');
+                    // Set voice
+                    const voices = speechSynth.getVoices();
+                    const trinoidsVoice = voices.find(voice => voice.name.includes('Trinoids'));
+                    if (trinoidsVoice) {
+                        speechUtterance.voice = trinoidsVoice;
+                    }
+                    
+                    // Track speech timing
+                    let speechStartTime = null;
+                    let speechDuration = null;
+                    
+                    speechUtterance.onstart = () => {
+                        speechStartTime = Date.now();
+                        console.log('🌿 Voice announcement started');
+                    };
+                    
+                    speechUtterance.onend = () => {
+                        speechDuration = Date.now() - speechStartTime;
+                        console.log('🌿 Voice announcement ended, duration:', speechDuration + 'ms');
                         
-                        // Start audio when video starts
-                        if (backgroundAudio && audioBtn) {
-                            backgroundAudio.volume = 0.3;
-                            backgroundAudio.loop = true;
-                            backgroundAudio.play().then(() => {
-                                console.log('🎵 Audio started with video');
-                                audioBtn.innerHTML = '<i class="fas fa-volume-up"></i><span>Audio On</span>';
-                                audioBtn.classList.add('playing');
-                            }).catch((error) => {
-                                console.log('🎵 Audio failed:', error);
-                            });
-                        }
-                    }).catch((error) => {
-                        console.log('🎬 Video failed to start:', error);
-                        // Fallback: if video fails, still show the main site
+                        // Wait 1 second after voice completes, then start video
                         setTimeout(() => {
-                            transitionToMainSite();
+                            console.log('🎬 Starting video after voice + 1 second delay');
+                            startVideoSequence();
                         }, 1000);
-                    });
+                    };
+                    
+                    speechSynth.speak(speechUtterance);
+                } else {
+                    // Fallback if speech synthesis not available
+                    setTimeout(() => {
+                        startVideoSequence();
+                    }, 3000); // 3 second fallback
                 }
             });
         }
+    }
+}
+
+// Start video sequence after supernova completes
+function startVideoSequence() {
+    const videoIntro = document.getElementById('videoIntro');
+    const introVideo = document.getElementById('introVideo');
+    const backgroundAudio = document.getElementById('backgroundAudio');
+    const audioBtn = document.getElementById('playAudioBtn');
+    
+    // Show video intro
+    if (videoIntro) {
+        console.log('🎬 Showing video intro');
+        videoIntro.style.display = 'block';
+        videoIntro.style.opacity = '1';
+    } else {
+        console.log('❌ Video intro element not found');
+    }
+    
+    // Start video
+    if (introVideo) {
+        // Set video properties for mobile
+        introVideo.muted = true; // Required for mobile autoplay
+        introVideo.playsInline = true; // Prevents fullscreen on mobile
+        
+        introVideo.play().then(() => {
+            console.log('🎬 Video started');
+            
+            // Start audio when video starts
+            if (backgroundAudio && audioBtn) {
+                backgroundAudio.volume = 0.3;
+                backgroundAudio.loop = true;
+                backgroundAudio.play().then(() => {
+                    console.log('🎵 Audio started with video');
+                    audioBtn.innerHTML = '<i class="fas fa-volume-up"></i><span>Audio On</span>';
+                    audioBtn.classList.add('playing');
+                }).catch((error) => {
+                    console.log('🎵 Audio failed:', error);
+                });
+            }
+            
+            // Clean up supernova explosion container after video starts
+            setTimeout(() => {
+                if (window.supernovaExplosionContainer && window.supernovaExplosionContainer.parentNode) {
+                    window.supernovaExplosionContainer.parentNode.removeChild(window.supernovaExplosionContainer);
+                    window.supernovaExplosionContainer = null;
+                }
+            }, 500);
+            
+        }).catch((error) => {
+            console.log('🎬 Video failed to start:', error);
+            // Fallback: if video fails, still show the main site
+            setTimeout(() => {
+                transitionToMainSite();
+            }, 1000);
+        });
+    }
+}
+
+// Create supernova explosion effect
+function createSupernovaEffect(centerX, centerY) {
+    // Create explosion container with full black background
+    const explosionContainer = document.createElement('div');
+    explosionContainer.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 10001;
+        background: #000000;
+    `;
+    document.body.appendChild(explosionContainer);
+    
+    // Create bright flash overlay
+    const flashOverlay = document.createElement('div');
+    flashOverlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at ${centerX}px ${centerY}px, 
+            rgba(255, 255, 255, 1) 0%, 
+            rgba(255, 255, 255, 0.9) 10%, 
+            rgba(255, 255, 255, 0.7) 20%, 
+            rgba(255, 255, 255, 0.4) 40%, 
+            rgba(255, 255, 255, 0.2) 60%, 
+            transparent 80%);
+        z-index: 10002;
+        opacity: 0;
+        transition: opacity 0.05s ease-out;
+    `;
+    document.body.appendChild(flashOverlay);
+    
+    // Create explosion particles with better physics
+    for (let i = 0; i < 80; i++) {
+        const particle = document.createElement('div');
+        const angle = (Math.PI * 2 * i) / 80;
+        const distance = 150 + Math.random() * 200;
+        const size = 2 + Math.random() * 6;
+        const speed = 0.8 + Math.random() * 0.4;
+        const delay = Math.random() * 0.3;
+        
+        // Create color variations for more realistic explosion
+        const colors = [
+            'hsl(15, 100%, 70%)',   // Orange
+            'hsl(45, 100%, 70%)',   // Yellow
+            'hsl(60, 100%, 70%)',   // Bright yellow
+            'hsl(30, 100%, 80%)',   // Light orange
+            'hsl(0, 100%, 80%)',    // Light red
+            'hsl(50, 100%, 80%)'    // Light yellow
+        ];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        
+        particle.style.cssText = `
+            position: absolute;
+            left: ${centerX}px;
+            top: ${centerY}px;
+            width: ${size}px;
+            height: ${size}px;
+            background: ${color};
+            border-radius: 50%;
+            box-shadow: 0 0 ${size * 3}px ${color}, 0 0 ${size * 6}px ${color};
+            pointer-events: none;
+            z-index: 10003;
+            transform: translate(-50%, -50%);
+            animation: supernovaExplosion 2s ease-out ${delay}s forwards;
+        `;
+        
+        // Set custom properties for the animation
+        particle.style.setProperty('--angle', angle + 'rad');
+        particle.style.setProperty('--distance', distance + 'px');
+        particle.style.setProperty('--speed', speed);
+        
+        explosionContainer.appendChild(particle);
+    }
+    
+    // Create shockwave rings
+    for (let i = 0; i < 4; i++) {
+        const ring = document.createElement('div');
+        ring.style.cssText = `
+            position: absolute;
+            left: ${centerX}px;
+            top: ${centerY}px;
+            width: 0;
+            height: 0;
+            border: 3px solid rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10004;
+            transform: translate(-50%, -50%);
+            animation: shockwaveRing 1.5s ease-out ${i * 0.15}s forwards;
+        `;
+        
+        explosionContainer.appendChild(ring);
+    }
+    
+    // Create additional energy waves
+    for (let i = 0; i < 3; i++) {
+        const energyWave = document.createElement('div');
+        energyWave.style.cssText = `
+            position: absolute;
+            left: ${centerX}px;
+            top: ${centerY}px;
+            width: 0;
+            height: 0;
+            border: 2px solid rgba(255, 165, 0, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10005;
+            transform: translate(-50%, -50%);
+            animation: energyWave 1.2s ease-out ${i * 0.2}s forwards;
+        `;
+        
+        explosionContainer.appendChild(energyWave);
+    }
+    
+    // Animate the explosion with multiple flash phases
+    setTimeout(() => {
+        flashOverlay.style.opacity = '1';
+    }, 50);
+    
+    setTimeout(() => {
+        flashOverlay.style.opacity = '0.8';
+    }, 100);
+    
+    setTimeout(() => {
+        flashOverlay.style.opacity = '0.4';
+    }, 200);
+    
+    setTimeout(() => {
+        flashOverlay.style.opacity = '0.2';
+    }, 400);
+    
+    setTimeout(() => {
+        flashOverlay.style.opacity = '0';
+    }, 800);
+    
+    // Clean up explosion elements but keep black background
+    setTimeout(() => {
+        if (flashOverlay.parentNode) {
+            flashOverlay.parentNode.removeChild(flashOverlay);
+        }
+        // Keep explosionContainer for black background until video starts
+    }, 2000);
+    
+    // Add CSS animations if not already present
+    if (!document.getElementById('supernova-animations')) {
+        const style = document.createElement('style');
+        style.id = 'supernova-animations';
+        style.textContent = `
+            @keyframes supernovaExplosion {
+                0% {
+                    transform: translate(-50%, -50%) scale(0);
+                    opacity: 1;
+                }
+                20% {
+                    opacity: 1;
+                }
+                100% {
+                    transform: translate(-50%, -50%) scale(1) translate(
+                        calc(cos(var(--angle)) * var(--distance)),
+                        calc(sin(var(--angle)) * var(--distance))
+                    );
+                    opacity: 0;
+                }
+            }
+            
+            @keyframes shockwaveRing {
+                0% {
+                    width: 0;
+                    height: 0;
+                    opacity: 1;
+                    border-width: 3px;
+                }
+                50% {
+                    opacity: 0.8;
+                }
+                100% {
+                    width: 500px;
+                    height: 500px;
+                    opacity: 0;
+                    border-width: 1px;
+                }
+            }
+            
+            @keyframes energyWave {
+                0% {
+                    width: 0;
+                    height: 0;
+                    opacity: 1;
+                    border-width: 2px;
+                }
+                100% {
+                    width: 300px;
+                    height: 300px;
+                    opacity: 0;
+                    border-width: 1px;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    // Store the explosion container for later cleanup
+    window.supernovaExplosionContainer = explosionContainer;
+}
+
+// Transition to main site (only called after video ends)
+function transitionToMainSite() {
+    const videoIntro = document.getElementById('videoIntro');
+    const audioBtn = document.getElementById('playAudioBtn');
+    
+    if (videoIntro) {
+        console.log('🎬 Starting transition to main site');
+        
+        // Fade out video intro
+        videoIntro.classList.add('fade-out');
+        
+        // After fade animation, hide video intro
+        setTimeout(() => {
+            videoIntro.style.display = 'none';
+            videoIntro.classList.remove('fade-out');
+            console.log('🎬 Transition to main site complete');
+        }, 2000); // Match the CSS transition duration
     }
 }
 
