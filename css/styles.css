@@ -204,6 +204,37 @@ body {
     transform: translateY(-2px);
 }
 
+.header-roles-frame {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    border-top: 2px solid rgba(0, 212, 255, 0.4);
+    padding: 1.5rem 3rem;
+    backdrop-filter: blur(10px);
+    position: relative;
+}
+
+.header-roles-frame::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.6), transparent);
+}
+
+.roles-text {
+    font-size: 1.4rem;
+    font-weight: 300;
+    font-family: 'Orbitron', sans-serif;
+    color: #00d4ff;
+    margin: 0;
+    text-align: center;
+    text-shadow: 0 0 15px rgba(0, 212, 255, 0.8);
+    letter-spacing: 0.05em;
+    line-height: 1.4;
+}
+
 .header-accent {
     position: absolute;
     top: 0;
@@ -242,8 +273,20 @@ body {
         font-size: 2.5rem;
     }
     
+    .quote {
+        font-size: 1.3rem;
+    }
+    
     .title {
         font-size: 1.4rem;
+    }
+    
+    .header-roles-frame {
+        padding: 1rem 1.5rem;
+    }
+    
+    .roles-text {
+        font-size: 1.2rem;
     }
 }
 
@@ -284,6 +327,19 @@ body {
     letter-spacing: 0.1em;
     position: relative;
     z-index: 2;
+}
+
+.quote {
+    font-size: 1.6rem;
+    font-weight: 300;
+    font-family: 'Orbitron', sans-serif;
+    color: rgba(0, 212, 255, 0.8);
+    margin: 0 0 1rem 0;
+    text-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
+    letter-spacing: 0.05em;
+    position: relative;
+    z-index: 2;
+    font-style: italic;
 }
 
 .title {
