@@ -1293,7 +1293,29 @@ body {
         padding: 2rem;
     }
     
-
+    /* Video Intro Mobile Styles */
+    .intro-title {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .intro-subtitle {
+        font-size: 1.2rem;
+        margin: 0.5rem 0 1.5rem 0;
+    }
+    
+    .loading-bar {
+        width: 250px;
+        height: 3px;
+    }
+    
+    .video-overlay {
+        padding: 0 1rem;
+    }
+    
+    .intro-content {
+        max-width: 90%;
+    }
 }
 
 /* Mobile-specific styles */
@@ -1335,6 +1357,19 @@ body {
     .education-card {
         margin-bottom: 1rem;
         padding: 1rem;
+    }
+    
+    /* Video Intro Small Mobile Styles */
+    .intro-title {
+        font-size: 2rem;
+    }
+    
+    .intro-subtitle {
+        font-size: 1rem;
+    }
+    
+        .loading-bar {
+        width: 200px;
     }
     
     /* Stack experience card headers vertically on mobile */
