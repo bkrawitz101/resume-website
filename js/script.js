@@ -1,3 +1,6 @@
+// Simple test to see if JavaScript is running
+console.log('🧪 JavaScript file loaded successfully');
+
 // Global function to start background audio
 function startBackgroundAudioGlobal() {
     console.log('🎵 Global: Attempting to start background audio...');
@@ -400,29 +403,45 @@ window.addEventListener('load', function() {
 
 // Initiate Sequence functionality
 function initInitiateSequence() {
+    console.log('🔧 Initiate sequence function called');
     const initiateSequence = document.getElementById('initiateSequence');
     const videoIntro = document.getElementById('videoIntro');
     const introVideo = document.getElementById('introVideo');
     const backgroundAudio = document.getElementById('backgroundAudio');
     const audioBtn = document.getElementById('playAudioBtn');
     
+    console.log('🔧 Initiate sequence elements found:', {
+        initiateSequence: !!initiateSequence,
+        videoIntro: !!videoIntro,
+        introVideo: !!introVideo,
+        backgroundAudio: !!backgroundAudio,
+        audioBtn: !!audioBtn
+    });
+    
     if (initiateSequence) {
         // Add click handler to the flashing box
         const flashingBox = initiateSequence.querySelector('.flashing-box');
+        console.log('🔧 Flashing box found:', !!flashingBox);
+        
         if (flashingBox) {
             flashingBox.addEventListener('click', function() {
                 console.log('🚀 Initiate sequence clicked');
                 
                 // Hide the initiate sequence
+                console.log('🎬 Hiding initiate sequence');
                 initiateSequence.style.opacity = '0';
                 setTimeout(() => {
                     initiateSequence.style.display = 'none';
+                    console.log('🎬 Initiate sequence hidden');
                 }, 1000);
                 
                 // Show video intro
                 if (videoIntro) {
+                    console.log('🎬 Showing video intro');
                     videoIntro.style.display = 'block';
                     videoIntro.style.opacity = '1';
+                } else {
+                    console.log('❌ Video intro element not found');
                 }
                 
                 // Start video
@@ -477,6 +496,7 @@ function startAudioOnInteraction() {
 
 // Initialize initiate sequence
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 DOM Content Loaded - Starting initialization');
     initInitiateSequence();
 });
 
@@ -895,7 +915,7 @@ function initClickableEntries() {
                 const chevron = clickIndicator.querySelector('i');
                 chevron.className = 'fas fa-chevron-up';
                 
-                // Only start typing if there's a typing-text element (chevron click)
+                // Only start typing if there's a typing-text element (mission statement)
                 if (typingText) {
                     // Clear any existing text and cursor
                     typingText.innerHTML = '';
@@ -904,10 +924,10 @@ function initClickableEntries() {
                     // Play typing sound
                     playTypingSound();
                 } else {
-                    // For experience cards, create typing effect for bullet points
+                    // For experience cards, type and speak bullet points (chevron click)
                     const bulletsList = content.querySelector('.experience-bullets');
-                    if (bulletsList) {
-                        // Hide all bullet points initially (chevron click)
+                    if (bulletsList && entry.classList.contains('experience-card')) {
+                        // Hide all bullet points initially
                         const bullets = bulletsList.querySelectorAll('li');
                         bullets.forEach(bullet => {
                             bullet.style.opacity = '0';
@@ -989,7 +1009,7 @@ function initClickableEntries() {
                 }
                 
             } else {
-                // Stop speech when collapsing (chevron click)
+                // Stop speech
                 stopAllSpeech();
                 
                 // Collapse
@@ -1002,15 +1022,6 @@ function initClickableEntries() {
                 
                 if (typingText) {
                     typingText.innerHTML = '';
-                } else {
-                    // Reset bullet points opacity for experience cards
-                    const bulletsList = content.querySelector('.experience-bullets');
-                    if (bulletsList) {
-                        const bullets = bulletsList.querySelectorAll('li');
-                        bullets.forEach(bullet => {
-                            bullet.style.opacity = '0';
-                        });
-                    }
                 }
             }
         });
@@ -1043,10 +1054,10 @@ function initClickableEntries() {
                     // Play typing sound
                     playTypingSound();
                 } else {
-                    // For experience cards, create typing effect for bullet points
+                    // For experience cards, type and speak bullet points (header click)
                     const bulletsList = content.querySelector('.experience-bullets');
-                    if (bulletsList) {
-                        // Hide all bullet points initially (header click)
+                    if (bulletsList && entry.classList.contains('experience-card')) {
+                        // Hide all bullet points initially
                         const bullets = bulletsList.querySelectorAll('li');
                         bullets.forEach(bullet => {
                             bullet.style.opacity = '0';
@@ -1128,7 +1139,7 @@ function initClickableEntries() {
                 }
                 
             } else {
-                // Stop speech when collapsing (header click)
+                // Stop speech
                 stopAllSpeech();
                 
                 // Collapse
@@ -1141,15 +1152,6 @@ function initClickableEntries() {
                 
                 if (typingText) {
                     typingText.innerHTML = '';
-                } else {
-                    // Reset bullet points opacity for experience cards
-                    const bulletsList = content.querySelector('.experience-bullets');
-                    if (bulletsList) {
-                        const bullets = bulletsList.querySelectorAll('li');
-                        bullets.forEach(bullet => {
-                            bullet.style.opacity = '0';
-                        });
-                    }
                 }
             }
         });

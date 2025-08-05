@@ -316,7 +316,7 @@ body {
 
 /* About Section with HAL 9000 Voice */
 .about-content {
-    max-width: 1000px;
+    width: 100%;
 }
 
 .mission-statement {
@@ -353,6 +353,42 @@ body {
     text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
 }
 
+.mission-video-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.mission-video-background video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.3;
+}
+
+.experience-video-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.experience-video-background video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.3;
+}
+
 .mission-text {
     font-size: 1.5rem;
     line-height: 1.9;
@@ -360,6 +396,8 @@ body {
     font-weight: 400;
     font-family: 'Rajdhani', sans-serif;
     letter-spacing: 0.02em;
+    position: relative;
+    z-index: 1;
 }
 
 .mission-statement::before {
@@ -434,8 +472,10 @@ body {
 }
 
 .clickable-entry.expanded .entry-content {
-    max-height: 1000px;
+    max-height: none;
+    overflow: visible;
     padding: 2rem 3rem;
+    position: relative;
 }
 
 .typing-text {
