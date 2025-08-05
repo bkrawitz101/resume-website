@@ -155,6 +155,14 @@ function initVideoIntro() {
         introVideo.addEventListener('loadedmetadata', function() {
             videoDuration = introVideo.duration;
             console.log('🎬 Video duration:', videoDuration, 'seconds');
+            
+            // Mobile fallback: if video doesn't end properly, force transition after duration
+            setTimeout(() => {
+                if (videoIntro.style.display !== 'none') {
+                    console.log('🎬 Mobile timeout fallback: Forcing transition after video duration');
+                    transitionToMainSite();
+                }
+            }, (videoDuration * 1000) + 1000); // Video duration + 1 second buffer
         });
         
         // Update loading bar based on video progress
@@ -164,12 +172,31 @@ function initVideoIntro() {
             if (loadingProgress) {
                 loadingProgress.style.width = progress + '%';
             }
+            
+            // Mobile fallback: if video is near end but 'ended' event doesn't fire
+            if (videoDuration > 0 && currentTime >= videoDuration - 0.5) {
+                console.log('🎬 Mobile fallback: Video near end, transitioning');
+                transitionToMainSite();
+            }
         });
         
         // Handle video end - transition to main site
         introVideo.addEventListener('ended', function() {
             console.log('🎬 Video intro ended, transitioning to main site');
             transitionToMainSite();
+        });
+        
+        // Mobile-specific debugging
+        introVideo.addEventListener('error', function(e) {
+            console.log('🎬 Video error on mobile:', e);
+        });
+        
+        introVideo.addEventListener('stalled', function() {
+            console.log('🎬 Video stalled on mobile');
+        });
+        
+        introVideo.addEventListener('waiting', function() {
+            console.log('🎬 Video waiting on mobile');
         });
         
         // Start background audio when video starts

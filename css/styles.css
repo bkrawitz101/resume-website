@@ -1311,6 +1311,12 @@ body {
     
     .video-overlay {
         padding: 0 1rem;
+        background: linear-gradient(
+            135deg,
+            rgba(0, 0, 0, 0.7) 0%,
+            rgba(0, 212, 255, 0.3) 50%,
+            rgba(0, 0, 0, 0.7) 100%
+        );
     }
     
     .intro-content {
@@ -1567,20 +1573,22 @@ body {
     height: 100%;
     background: linear-gradient(
         135deg,
-        rgba(0, 0, 0, 0.3) 0%,
-        rgba(0, 212, 255, 0.1) 50%,
-        rgba(0, 0, 0, 0.3) 100%
+        rgba(0, 0, 0, 0.5) 0%,
+        rgba(0, 212, 255, 0.2) 50%,
+        rgba(0, 0, 0, 0.5) 100%
     );
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    z-index: 9999;
 }
 
 .intro-content {
     text-align: center;
     color: #ffffff;
-    z-index: 10;
+    z-index: 10000;
+    position: relative;
 }
 
 .intro-title {
