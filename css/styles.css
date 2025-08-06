@@ -1802,11 +1802,11 @@ body {
     height: 100%;
     z-index: 10000;
     background: #000;
-    display: none;
+    display: flex;
     align-items: center;
     justify-content: center;
     transition: opacity 1s ease-in-out;
-    pointer-events: none;
+    pointer-events: auto;
 }
 
 .sequence-content {
