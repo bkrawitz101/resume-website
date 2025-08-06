@@ -421,7 +421,7 @@ body {
     margin-top: 50px;
     padding: 2rem 2rem;
     position: relative;
-    z-index: 10;
+    z-index: 1;
     min-height: calc(100vh - 200px);
 }
 
@@ -1447,6 +1447,52 @@ body {
 }
 
 @media (max-width: 768px) {
+    /* Mobile Performance Optimizations */
+    * {
+        -webkit-overflow-scrolling: touch;
+        -webkit-transform: translateZ(0);
+        -webkit-backface-visibility: hidden;
+    }
+    
+    .container {
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Disable expensive effects on mobile */
+    .header {
+        backdrop-filter: none;
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+    }
+    
+    .header-card,
+    .experience-card,
+    .project-card,
+    .education-card,
+    .contact-card {
+        backdrop-filter: none;
+        transform: none !important;
+        box-shadow: 0 0 10px rgba(0, 212, 255, 0.1);
+    }
+    
+    .header-card:hover,
+    .experience-card:hover,
+    .project-card:hover,
+    .education-card:hover,
+    .contact-card:hover {
+        transform: none !important;
+        box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+    }
+    
+    /* Reduce text shadows on mobile */
+    .name,
+    .title,
+    .section-header h2,
+    .entry-header h4,
+    .company,
+    .period {
+        text-shadow: none;
+    }
+    
     .header-content {
         padding: 0 1rem;
     }
@@ -1458,6 +1504,7 @@ body {
     .main-content {
         padding: 2rem 1rem;
         margin-top: 30px;
+        -webkit-overflow-scrolling: touch;
     }
     
     .nav-tabs {
@@ -1548,6 +1595,52 @@ body {
 
 /* Mobile-specific styles */
 @media (max-width: 480px) {
+    /* Mobile Performance Optimizations */
+    * {
+        -webkit-overflow-scrolling: touch;
+        -webkit-transform: translateZ(0);
+        -webkit-backface-visibility: hidden;
+    }
+    
+    .container {
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Disable expensive effects on mobile */
+    .header {
+        backdrop-filter: none;
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+    }
+    
+    .header-card,
+    .experience-card,
+    .project-card,
+    .education-card,
+    .contact-card {
+        backdrop-filter: none;
+        transform: none !important;
+        box-shadow: 0 0 10px rgba(0, 212, 255, 0.1);
+    }
+    
+    .header-card:hover,
+    .experience-card:hover,
+    .project-card:hover,
+    .education-card:hover,
+    .contact-card:hover {
+        transform: none !important;
+        box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+    }
+    
+    /* Reduce text shadows on mobile */
+    .name,
+    .title,
+    .section-header h2,
+    .entry-header h4,
+    .company,
+    .period {
+        text-shadow: none;
+    }
+    
     .title {
         font-size: 0.7rem;
         line-height: 1.8;
@@ -1575,6 +1668,7 @@ body {
     .main-content {
         padding: 1rem 0.5rem;
         margin-top: 20px;
+        -webkit-overflow-scrolling: touch;
     }
     
     .section-header h2 {
@@ -1597,7 +1691,7 @@ body {
         font-size: 1rem;
     }
     
-        .loading-bar {
+    .loading-bar {
         width: 200px;
     }
     
@@ -1708,10 +1802,11 @@ body {
     height: 100%;
     z-index: 10000;
     background: #000;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     transition: opacity 1s ease-in-out;
+    pointer-events: none;
 }
 
 .sequence-content {
@@ -1785,6 +1880,7 @@ body {
     background: #000;
     transition: opacity 2s ease-in-out;
     display: none;
+    pointer-events: none;
 }
 
 .video-intro.fade-out {
