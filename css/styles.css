@@ -236,16 +236,16 @@ body {
     }
     
     .header-profile {
-        width: 120px !important;
-        height: 120px !important;
+        width: 180px !important;
+        height: 180px !important;
         margin: 0 auto;
     }
     
     .header-profile .profile-picture {
         width: 100% !important;
         height: 100% !important;
-        max-width: 120px !important;
-        max-height: 120px !important;
+        max-width: 180px !important;
+        max-height: 180px !important;
         object-fit: contain !important;
         border-radius: 0 !important;
         border: none !important;
@@ -287,8 +287,8 @@ body {
 
 .header-profile {
     flex-shrink: 0;
-    width: 400px;
-    height: 400px;
+    width: 500px;
+    height: 500px;
     border-radius: 0;
     overflow: visible;
     border: none;
@@ -298,8 +298,6 @@ body {
     .header-profile .profile-picture {
         width: 100% !important;
         height: 100% !important;
-        max-width: 120px !important;
-        max-height: 120px !important;
         object-fit: contain !important;
         border-radius: 0 !important;
         border: none !important;
