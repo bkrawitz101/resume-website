@@ -1331,6 +1331,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize clickable entries with typing effect
     initClickableEntries();
+    
+    // Initialize mobile navigation
+    initMobileNavigation();
 });
 
 // Clickable Entries with Typing Effect
@@ -1726,4 +1729,69 @@ function typeText(element, text, speed = 80) { // Slower speed to match speech
 function playTypingSound() {
     // Simple console log for typing sound (no audio processing)
     console.log('⌨️ Typing sound played');
+}
+
+// Mobile Navigation Functionality
+function toggleMobileNav(element) {
+    const navTree = element.closest('.mobile-nav-tree');
+    navTree.classList.toggle('active');
+    
+    // Play sound effect (optional)
+    console.log('📱 Mobile navigation toggled');
+}
+
+// Initialize mobile navigation
+function initMobileNavigation() {
+    // Add click functionality to mobile nav items
+    document.querySelectorAll('.mobile-nav-item').forEach(item => {
+        item.addEventListener('click', function() {
+            const section = this.getAttribute('data-section');
+            if (section) {
+                // Hide mobile menu
+                const navTree = this.closest('.mobile-nav-tree');
+                navTree.classList.remove('active');
+                
+                // Show the corresponding section
+                showSection(section);
+                
+                // Update active nav tab
+                document.querySelectorAll('.nav-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                
+                // Find and activate the corresponding desktop nav tab
+                const desktopTab = document.querySelector(`[data-section="${section}"]`);
+                if (desktopTab) {
+                    desktopTab.classList.add('active');
+                }
+                
+                console.log('📱 Mobile navigation: Switched to section:', section);
+            }
+        });
+    });
+    
+    // Add click functionality to dropdown items
+    document.querySelectorAll('.dropdown-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            const href = this.getAttribute('href');
+            if (href && href.startsWith('#')) {
+                const section = href.substring(1);
+                showSection(section);
+                
+                // Update active nav tab
+                document.querySelectorAll('.nav-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                
+                // Find and activate the corresponding desktop nav tab
+                const desktopTab = document.querySelector(`[data-section="${section}"]`);
+                if (desktopTab) {
+                    desktopTab.classList.add('active');
+                }
+                
+                console.log('📱 Dropdown navigation: Switched to section:', section);
+            }
+        });
+    });
 } 

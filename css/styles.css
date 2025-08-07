@@ -15,6 +15,7 @@ body {
     font-weight: 400;
     font-size: 18px;
     letter-spacing: 0.02em;
+    position: relative;
 }
 
 /* Container with Enhanced Visibility */
@@ -22,7 +23,10 @@ body {
     min-height: 100vh;
     background: #000000;
     position: relative;
+    overflow: visible;
 }
+
+
 
 /* 2001: A Space Odyssey Monolith Effect */
 .monolith-container {
@@ -61,7 +65,10 @@ body {
     z-index: 1000;
     backdrop-filter: blur(20px);
     box-shadow: 0 0 40px rgba(0, 212, 255, 0.4);
+    overflow: visible;
 }
+
+
 
 .header-content {
     width: 100%;
@@ -221,10 +228,20 @@ body {
     align-items: center;
     gap: 2rem;
     padding: 2rem 3rem;
-    max-width: 1400px;
+    max-width: 800px;
     margin: 0 auto;
     width: 100%;
     flex-direction: row-reverse;
+    position: relative;
+    overflow: hidden;
+}
+
+.header-content-wrapper .header-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    flex: 1;
 }
 
 @media (max-width: 768px) {
@@ -233,6 +250,12 @@ body {
         text-align: center;
         gap: 1rem;
         padding: 1rem;
+    }
+    
+    .header-content-wrapper .header-text {
+        flex: none;
+        width: 100%;
+        text-align: center;
     }
     
     .header-profile {
@@ -287,8 +310,8 @@ body {
 
 .header-profile {
     flex-shrink: 0;
-    width: 500px;
-    height: 500px;
+    width: 300px;
+    height: 300px;
     border-radius: 0;
     overflow: visible;
     border: none;
@@ -372,12 +395,18 @@ body {
     margin-top: 2rem;
     backdrop-filter: blur(20px);
     box-shadow: 0 4px 30px rgba(0, 212, 255, 0.3);
+    overflow: visible;
+    position: relative;
+    z-index: 1000;
 }
 
 .nav-container {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 2rem;
+    overflow: visible;
+    position: relative;
+    z-index: 1000;
 }
 
 .nav-tabs {
@@ -435,6 +464,302 @@ body {
     text-shadow: 0 0 10px rgba(0, 212, 255, 0.9);
 }
 
+/* Neural Network Navigation Styles */
+.neural .nav-tabs {
+    display: flex;
+    gap: 3rem;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem;
+    background: rgba(0, 0, 0, 0.9);
+    border-radius: 25px;
+    border: 2px solid #00d4ff;
+    box-shadow: 0 0 40px rgba(0, 212, 255, 0.4);
+    position: relative;
+    overflow: visible;
+    z-index: 1000;
+}
+
+.neural .nav-tabs::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+    transform: translateY(-50%);
+    animation: axon-flow 4s infinite;
+    opacity: 0.8;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.6);
+}
+
+.neural .nav-tab {
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 212, 255, 0.3), rgba(0, 0, 0, 0.9));
+    border: 2px solid #00d4ff;
+    color: #00d4ff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 600;
+    font-size: 0.7rem;
+    text-align: center;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: visible;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+    width: 80px;
+    height: 80px;
+}
+
+.neural .nav-tab i {
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    opacity: 1;
+    transform: scale(1);
+}
+
+.neural .nav-tab .nav-label {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: #00d4ff;
+    padding: 0.25rem 0.5rem;
+    border-radius: 15px;
+    font-size: 0.7rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
+    z-index: 1002;
+}
+
+.neural .nav-tab::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    background: radial-gradient(circle, #00d4ff, #0066cc);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: neuron-pulse 2s infinite;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
+}
+
+.neural .nav-tab::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 20%, rgba(0, 212, 255, 0.4) 3px, transparent 3px),
+        radial-gradient(circle at 80% 30%, rgba(0, 212, 255, 0.4) 3px, transparent 3px),
+        radial-gradient(circle at 30% 80%, rgba(0, 212, 255, 0.4) 3px, transparent 3px),
+        radial-gradient(circle at 70% 70%, rgba(0, 212, 255, 0.4) 3px, transparent 3px),
+        radial-gradient(circle at 50% 10%, rgba(0, 212, 255, 0.4) 2px, transparent 2px),
+        radial-gradient(circle at 10% 50%, rgba(0, 212, 255, 0.4) 2px, transparent 2px),
+        radial-gradient(circle at 90% 50%, rgba(0, 212, 255, 0.4) 2px, transparent 2px),
+        radial-gradient(circle at 50% 90%, rgba(0, 212, 255, 0.4) 2px, transparent 2px);
+    border-radius: 50%;
+    animation: dendrite-pulse 3s infinite;
+}
+
+.neural .nav-tab:hover {
+    transform: scale(1.5);
+    width: 120px;
+    height: 120px;
+    box-shadow: 0 0 35px rgba(0, 212, 255, 0.8);
+    border-color: #ffffff;
+    color: #ffffff;
+    text-shadow: 0 0 15px rgba(0, 212, 255, 1);
+    z-index: 10000;
+    background: radial-gradient(circle, rgba(0, 212, 255, 0.4), rgba(0, 0, 0, 0.9));
+}
+
+.neural .nav-tab:hover i {
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.3s ease;
+}
+
+.neural .nav-tab:hover .nav-label {
+    opacity: 1;
+    visibility: visible;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-align: center;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0.75rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(100% - 1.5rem);
+    height: calc(100% - 1.5rem);
+    max-width: 90px;
+    max-height: 90px;
+    line-height: 1.1;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+}
+
+/* Special sizing for longer text like "Mission Statement" */
+.neural .nav-tab[data-section="about"]:hover .nav-label {
+    font-size: 0.6rem;
+    line-height: 1;
+    padding: 1rem;
+}
+
+.neural .nav-tab.active {
+    transform: scale(1.1);
+    box-shadow: 0 0 25px rgba(0, 212, 255, 0.6);
+    border-color: #ffffff;
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
+}
+
+.neural .nav-tab:hover::before {
+    animation: neuron-pulse 0.5s infinite;
+    box-shadow: 0 0 25px rgba(0, 212, 255, 1);
+}
+
+.neural .nav-tab:hover::after {
+    animation: neural-pulse 1s infinite;
+}
+
+
+
+/* Neural Network Mobile Navigation */
+.neural .mobile-nav-tree {
+    display: none;
+}
+
+.neural .mobile-nav-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #00d4ff;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    position: relative;
+    overflow: visible;
+}
+
+.neural .mobile-nav-main i {
+    color: #00d4ff;
+    font-size: 1.2rem;
+    margin-bottom: 0.25rem;
+}
+
+.neural .mobile-nav-main::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    background: #00d4ff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: neuron-pulse 2s infinite;
+}
+
+.neural .mobile-nav-item {
+    border: none;
+    color: #00d4ff;
+    border-radius: 0;
+    text-align: left;
+    background: transparent;
+    margin: 0.25rem 0;
+    position: relative;
+    overflow: visible;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+.neural .mobile-nav-item::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 3px;
+    height: 3px;
+    background: #00d4ff;
+    border-radius: 50%;
+    transform: translateY(-50%);
+    animation: neuron-pulse 1.5s infinite;
+}
+
+.neural .mobile-nav-item:hover {
+    background: rgba(0, 212, 255, 0.1);
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
+    transform: translateX(5px);
+}
+
+/* Neural Network Animations */
+@keyframes neuron-pulse {
+    0%, 100% { 
+        opacity: 0.6; 
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% { 
+        opacity: 1; 
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+}
+
+@keyframes neural-pulse {
+    0%, 100% { opacity: 0.1; }
+    50% { opacity: 0.3; }
+}
+
+@keyframes dendrite-pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.8; }
+}
+
+@keyframes axon-flow {
+    0% { 
+        background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+        opacity: 0.3;
+    }
+    50% { 
+        background: linear-gradient(90deg, transparent, #ffffff, transparent);
+        opacity: 0.8;
+    }
+    100% { 
+        background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+        opacity: 0.3;
+    }
+}
+
 /* Main Content */
 .main-content {
     max-width: 1400px;
@@ -449,6 +774,8 @@ body {
 /* Content Sections */
 .content-section {
     display: none;
+    position: relative;
+    overflow: hidden;
 }
 
 .content-section.active {
@@ -1483,6 +1810,8 @@ body {
     .header {
         backdrop-filter: none;
         box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        padding: 1rem 0;
+        min-height: 140px;
     }
     
     .header-card,
@@ -1524,23 +1853,168 @@ body {
     
     .main-content {
         padding: 2rem 1rem;
-        margin-top: 120px;
+        margin-top: 160px;
         -webkit-overflow-scrolling: touch;
+        padding-top: 1rem;
     }
     
-    .nav-tabs {
-        flex-direction: column;
+        .nav-tabs {
+        display: none !important;
     }
-    
+
     .nav-tab {
         border-bottom: none;
         border-left: 3px solid transparent;
     }
-    
+
     .nav-tab:hover,
     .nav-tab.active {
         border-left-color: #00d4ff;
         border-bottom-color: transparent;
+    }
+
+    /* Mobile Navigation Tree */
+    .mobile-nav-tree {
+        display: block !important;
+        margin-top: 1rem;
+    }
+
+    .mobile-nav-main {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        background: rgba(0, 0, 0, 0.8);
+        border: 2px solid currentColor;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 1rem;
+    }
+
+    .mobile-nav-main:hover {
+        background: rgba(0, 0, 0, 0.9);
+        box-shadow: 0 0 15px currentColor;
+        text-shadow: 0 0 10px currentColor;
+    }
+
+    .mobile-nav-main i {
+        font-size: 1.5rem;
+        margin-right: 0.75rem;
+    }
+
+    .mobile-nav-main span {
+        font-size: 1.1rem;
+        font-weight: 600;
+        font-family: 'Orbitron', sans-serif;
+    }
+
+    .mobile-nav-main .toggle-icon {
+        margin-left: auto;
+        transition: transform 0.3s ease;
+    }
+
+    .mobile-nav-tree.active .mobile-nav-main .toggle-icon {
+        transform: rotate(180deg);
+    }
+
+    /* Mobile Submenu */
+    .mobile-nav-submenu {
+        display: none;
+        margin-left: 1rem;
+        border-left: 2px solid currentColor;
+        padding-left: 1rem;
+    }
+
+    .mobile-nav-tree.active .mobile-nav-submenu {
+        display: block;
+    }
+
+    .mobile-nav-item {
+        padding: 0.5rem 0.75rem;
+        margin: 0.25rem 0;
+        border-radius: 4px;
+        background: rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 500;
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .mobile-nav-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: currentColor;
+        box-shadow: 0 0 10px currentColor;
+        text-shadow: 0 0 5px currentColor;
+    }
+
+    /* Neural Network Mobile Styles */
+    .neural .mobile-nav-main {
+        border-color: #00d4ff;
+        color: #00d4ff;
+        border-radius: 50%;
+        width: 80px;
+        height: 80px;
+        margin: 0 auto;
+        background: transparent;
+        box-shadow: none;
+        position: relative;
+        overflow: visible;
+    }
+
+    .neural .mobile-nav-main i {
+        color: #00d4ff;
+        font-size: 1.2rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .neural .mobile-nav-main::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 6px;
+        height: 6px;
+        background: #00d4ff;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        animation: neuron-pulse 2s infinite;
+    }
+
+    .neural .mobile-nav-item {
+        border: none;
+        color: #00d4ff;
+        border-radius: 0;
+        text-align: left;
+        background: transparent;
+        margin: 0.25rem 0;
+        position: relative;
+        overflow: visible;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+    }
+
+    .neural .mobile-nav-item::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 3px;
+        height: 3px;
+        background: #00d4ff;
+        border-radius: 50%;
+        transform: translateY(-50%);
+        animation: neuron-pulse 1.5s infinite;
+    }
+
+    .neural .mobile-nav-item:hover {
+        background: rgba(0, 212, 255, 0.1);
+        color: #ffffff;
+        text-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
+        transform: translateX(5px);
     }
     
     .name {
@@ -1631,6 +2105,8 @@ body {
     .header {
         backdrop-filter: none;
         box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        padding: 1rem 0;
+        min-height: 140px;
     }
     
     .header-card,
@@ -1688,7 +2164,8 @@ body {
     
     .main-content {
         padding: 1rem 0.5rem;
-        margin-top: 100px;
+        margin-top: 160px;
+        padding-top: 1rem;
         -webkit-overflow-scrolling: touch;
     }
     
