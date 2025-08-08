@@ -73,7 +73,7 @@ body {
 .header-content {
     width: 100%;
     margin: 0;
-    padding: 0;
+    padding: 0 2rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -146,18 +146,21 @@ body {
 .header-text {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    flex: 1;
+    gap: 0.1rem;
+    flex: none;
     text-align: left;
+    align-items: flex-start;
+    justify-content: center;
+    width: auto;
 }
 
 .header-card {
-    background: rgba(0, 0, 0, 0.7);
-    border: 2px solid rgba(0, 212, 255, 0.3);
-    border-radius: 0;
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid #00d4ff;
+    border-radius: 25px;
     padding: 0;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 8px 32px rgba(0, 212, 255, 0.1);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 40px rgba(0, 212, 255, 0.4);
     position: relative;
     overflow: visible;
     transition: all 0.3s ease;
@@ -226,14 +229,14 @@ body {
 .header-content-wrapper {
     display: flex;
     align-items: center;
-    gap: 2rem;
-    padding: 2rem 3rem;
-    max-width: 800px;
-    margin: 0 auto;
-    width: 100%;
+    gap: 1rem;
+    padding: 1.5rem 2rem !important;
+    max-width: none !important;
+    margin: 0;
+    width: 100% !important;
     flex-direction: row-reverse;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .header-content-wrapper .header-text {
@@ -241,7 +244,8 @@ body {
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
-    flex: 1;
+    flex: none;
+    width: auto;
 }
 
 @media (max-width: 768px) {
@@ -283,11 +287,18 @@ body {
     .name {
         font-size: 2rem;
         margin-bottom: 0.5rem;
+        white-space: normal;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
     }
     
     .quote {
         font-size: 1rem;
         margin-bottom: 0.5rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
     }
     
     .title {
@@ -345,11 +356,15 @@ body {
     font-weight: 300;
     font-family: 'Orbitron', sans-serif;
     color: #00d4ff;
-    margin: 0 0 0.5rem 0;
+    margin: 0;
     text-shadow: 0 0 30px rgba(0, 212, 255, 0.8);
     letter-spacing: 0.1em;
     position: relative;
     z-index: 2;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
 }
 
 .quote {
@@ -357,12 +372,15 @@ body {
     font-weight: 300;
     font-family: 'Orbitron', sans-serif;
     color: rgba(0, 212, 255, 0.8);
-    margin: 0 0 1rem 0;
+    margin: 0;
     text-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
     letter-spacing: 0.05em;
     position: relative;
     z-index: 2;
     font-style: italic;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
 }
 
 .title {
@@ -401,12 +419,13 @@ body {
 }
 
 .nav-container {
-    max-width: 1400px;
-    margin: 0 auto;
+    max-width: none;
+    margin: 0;
     padding: 0 2rem;
     overflow: visible;
     position: relative;
     z-index: 1000;
+    width: 100%;
 }
 
 .nav-tabs {
@@ -764,8 +783,8 @@ body {
 .main-content {
     max-width: 1400px;
     margin: 0 auto;
-    margin-top: 50px;
-    padding: 2rem 2rem;
+    margin-top: 20px;
+    padding: 1rem 2rem;
     position: relative;
     z-index: 1;
     min-height: calc(100vh - 200px);
@@ -1792,6 +1811,44 @@ body {
         overflow-wrap: break-word;
         hyphens: auto;
     }
+    
+    /* Tablet-specific header text optimization */
+    .name {
+        font-size: 2.8rem;
+        white-space: normal;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+    }
+    
+    .quote {
+        font-size: 1.4rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+    }
+}
+
+/* Medium tablet optimization */
+@media (max-width: 900px) {
+    .name {
+        font-size: 2.4rem;
+        white-space: normal;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+    }
+    
+    .quote {
+        font-size: 1.2rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+    }
+    
+    .header-content {
+        padding: 0 1.5rem;
+    }
 }
 
 @media (max-width: 768px) {
@@ -1856,6 +1913,8 @@ body {
         margin-top: 160px;
         -webkit-overflow-scrolling: touch;
         padding-top: 1rem;
+        position: relative;
+        z-index: 1;
     }
     
         .nav-tabs {
@@ -1877,6 +1936,8 @@ body {
     .mobile-nav-tree {
         display: block !important;
         margin-top: 1rem;
+        position: relative;
+        z-index: 9999;
     }
 
     .mobile-nav-main {
@@ -1924,24 +1985,37 @@ body {
         margin-left: 1rem;
         border-left: 2px solid currentColor;
         padding-left: 1rem;
+        position: relative;
+        z-index: 10000;
+        background: rgba(0, 0, 0, 0.95);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 0.5rem;
     }
 
     .mobile-nav-tree.active .mobile-nav-submenu {
         display: block;
     }
+    
+    /* Ensure mobile menu appears above content */
+    .mobile-nav-tree.active {
+        z-index: 9999;
+    }
 
     .mobile-nav-item {
-        padding: 0.5rem 0.75rem;
-        margin: 0.25rem 0;
+        padding: 0.75rem 1rem;
+        margin: 0.5rem 0;
         border-radius: 4px;
-        background: rgba(0, 0, 0, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.2);
         transition: all 0.3s ease;
         cursor: pointer;
         font-family: 'Orbitron', sans-serif;
         font-weight: 500;
         font-size: 0.9rem;
         color: rgba(255, 255, 255, 0.9);
+        position: relative;
+        z-index: 10001;
     }
 
     .mobile-nav-item:hover {
@@ -2151,6 +2225,10 @@ body {
     .name {
         font-size: 1.8rem;
         margin-bottom: 10px;
+        white-space: normal;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
     }
     
     .nav-tabs {
