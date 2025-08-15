@@ -18,6 +18,61 @@ body {
     position: relative;
 }
 
+
+
+.mobile-nav-main {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 1rem !important;
+    background: rgba(0, 0, 0, 0.8) !important;
+    border: 2px solid currentColor !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    color: white !important;
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    margin-bottom: 1rem !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    transition: all 0.3s ease !important;
+}
+
+.mobile-nav-main:hover {
+    background: rgba(0, 0, 0, 0.9) !important;
+    box-shadow: 0 0 15px currentColor !important;
+    text-shadow: 0 0 10px currentColor !important;
+}
+
+.mobile-nav-item {
+    padding: 0.75rem 1rem !important;
+    margin: 0.5rem 0 !important;
+    background: rgba(0, 0, 0, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 4px !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 500 !important;
+    font-size: 0.9rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    transition: all 0.3s ease !important;
+}
+
+.mobile-nav-item:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: currentColor !important;
+    box-shadow: 0 0 10px currentColor !important;
+    text-shadow: 0 0 5px currentColor !important;
+}
+
 /* Container with Enhanced Visibility */
 .container {
     min-height: 100vh;
@@ -1988,8 +2043,6 @@ body {
         margin-top: 1rem;
         position: relative;
         z-index: 9999;
-        background: rgba(255, 0, 0, 0.1); /* Debug: red background */
-        border: 2px solid red; /* Debug: red border */
     }
 
     .mobile-nav-main {
@@ -2003,8 +2056,6 @@ body {
         cursor: pointer;
         transition: all 0.3s ease;
         margin-bottom: 1rem;
-        min-height: 60px; /* Debug: ensure minimum height */
-        color: white !important; /* Debug: ensure text is visible */
     }
 
     .mobile-nav-main:hover {

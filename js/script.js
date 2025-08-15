@@ -980,35 +980,51 @@ document.addEventListener('mousedown', startAudioOnInteraction, { once: true });
 document.addEventListener('keydown', startAudioOnInteraction, { once: true });
 document.addEventListener('touchstart', startAudioOnInteraction, { once: true });
 
+// Global function to show section - accessible from anywhere
+function showSection(sectionId) {
+    console.log('🔄 showSection called with:', sectionId);
+    
+    // Find elements fresh each time to avoid scope issues
+    const contentSections = document.querySelectorAll('.content-section');
+    const navTabs = document.querySelectorAll('.nav-tab');
+    
+    console.log('🔄 Found content sections:', contentSections.length);
+    console.log('🔄 Found nav tabs:', navTabs.length);
+    
+    // Hide all sections
+    contentSections.forEach(section => {
+        section.classList.remove('active');
+        console.log('🔄 Removed active from section:', section.id);
+    });
+
+    // Remove active class from all nav tabs
+    navTabs.forEach(tab => {
+        tab.classList.remove('active');
+    });
+
+    // Show target section
+    const targetSection = document.getElementById(sectionId);
+    if (targetSection) {
+        targetSection.classList.add('active');
+        console.log('🔄 Added active to section:', sectionId);
+    } else {
+        console.error('❌ Section not found:', sectionId);
+    }
+
+    // Add active class to clicked nav tab
+    const activeTab = document.querySelector(`[data-section="${sectionId}"]`);
+    if (activeTab) {
+        activeTab.classList.add('active');
+        console.log('🔄 Added active to nav tab:', sectionId);
+    } else {
+        console.log('⚠️ Nav tab not found for section:', sectionId);
+    }
+}
+
 // Navigation functionality
 document.addEventListener('DOMContentLoaded', function() {
     const navTabs = document.querySelectorAll('.nav-tab');
     const contentSections = document.querySelectorAll('.content-section');
-
-    // Function to show section
-    function showSection(sectionId) {
-        // Hide all sections
-        contentSections.forEach(section => {
-            section.classList.remove('active');
-        });
-
-        // Remove active class from all nav tabs
-        navTabs.forEach(tab => {
-            tab.classList.remove('active');
-        });
-
-        // Show target section
-        const targetSection = document.getElementById(sectionId);
-        if (targetSection) {
-            targetSection.classList.add('active');
-        }
-
-        // Add active class to clicked nav tab
-        const activeTab = document.querySelector(`[data-section="${sectionId}"]`);
-        if (activeTab) {
-            activeTab.classList.add('active');
-        }
-    }
 
     // Add click event listeners to nav tabs
     navTabs.forEach(tab => {
@@ -1782,18 +1798,57 @@ function playTypingSound() {
 
 // Mobile Navigation Functionality
 function toggleMobileNav(element) {
-    const navTree = element.closest('.mobile-nav-tree');
-    navTree.classList.toggle('active');
+    console.log('🔄 toggleMobileNav called with element:', element);
     
-    // Play sound effect (optional)
-    console.log('📱 Mobile navigation toggled');
+    const navTree = element.closest('.mobile-nav-tree');
+    console.log('🔄 Found nav tree:', navTree);
+    
+    if (navTree) {
+        const wasActive = navTree.classList.contains('active');
+        navTree.classList.toggle('active');
+        const isNowActive = navTree.classList.contains('active');
+        
+        console.log('🔄 Mobile nav toggled:', {
+            wasActive: wasActive,
+            isNowActive: isNowActive,
+            element: element,
+            navTree: navTree
+        });
+    } else {
+        console.error('❌ Could not find mobile nav tree for element:', element);
+    }
 }
 
 // Initialize mobile navigation
 function initMobileNavigation() {
+    console.log('🔧 Initializing mobile navigation...');
+    
+    // Find mobile navigation elements
+    const mobileNavMain = document.querySelectorAll('.mobile-nav-main');
+    const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
+    
+    console.log('📱 Found mobile nav main buttons:', mobileNavMain.length);
+    console.log('📱 Found mobile nav items:', mobileNavItems.length);
+    
+    // Add click functionality to mobile nav main button
+    mobileNavMain.forEach((button, index) => {
+        console.log(`📱 Adding click listener to mobile nav main button ${index}`);
+        button.addEventListener('click', function(e) {
+            console.log('📱 Mobile nav main button clicked!');
+            e.preventDefault();
+            e.stopPropagation();
+            toggleMobileNav(this);
+        });
+    });
+    
     // Add click functionality to mobile nav items
-    document.querySelectorAll('.mobile-nav-item').forEach(item => {
-        item.addEventListener('click', function() {
+    mobileNavItems.forEach((item, index) => {
+        console.log(`📱 Adding click listener to mobile nav item ${index}:`, item.getAttribute('data-section'));
+        item.addEventListener('click', function(e) {
+            console.log('📱 Mobile nav item clicked:', this.getAttribute('data-section'));
+            e.preventDefault();
+            e.stopPropagation();
+            
             const section = this.getAttribute('data-section');
             if (section) {
                 // Hide mobile menu
