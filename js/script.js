@@ -1392,9 +1392,58 @@ function initClickableEntries() {
                 const chevron = clickIndicator.querySelector('i');
                 chevron.className = 'fas fa-chevron-up';
                 
-                // Check if this is a category (timeline-category or experience-category) - don't do speech/typing for categories
+                // Check if this is a category (timeline-category or experience-category) - do speech for categories
                 if (entry.classList.contains('timeline-category') || entry.classList.contains('experience-category')) {
-                    // For categories, just expand/collapse without speech or typing
+                    // For categories, do speech but no typing
+                    if ('speechSynthesis' in window && speechEnabled) {
+                        const speechSynth = window.speechSynthesis;
+                        const speechUtterance = new SpeechSynthesisUtterance(fullContent);
+                        speechUtterance.rate = 0.8;
+                        speechUtterance.pitch = 0.8;
+                        speechUtterance.volume = 1.0;
+                        
+                        // Set voice
+                        const voices = speechSynth.getVoices();
+                        const trinoidsVoice = voices.find(voice => voice.name.includes('Trinoids'));
+                        if (trinoidsVoice) {
+                            speechUtterance.voice = trinoidsVoice;
+                        }
+                        
+                        speechSynth.speak(speechUtterance);
+                    }
+                    return;
+                }
+                
+                // For experience cards, do speech for job titles but no typing
+                if (entry.classList.contains('experience-card')) {
+                    // Get the job title from the header
+                    const jobTitle = entry.querySelector('.entry-header h4');
+                    if (jobTitle && 'speechSynthesis' in window && speechEnabled) {
+                        const speechSynth = window.speechSynthesis;
+                        const speechUtterance = new SpeechSynthesisUtterance(jobTitle.textContent);
+                        speechUtterance.rate = 0.8;
+                        speechUtterance.pitch = 0.8;
+                        speechUtterance.volume = 1.0;
+                        
+                        // Set voice
+                        const voices = speechSynth.getVoices();
+                        const trinoidsVoice = voices.find(voice => voice.name.includes('Trinoids'));
+                        if (trinoidsVoice) {
+                            speechUtterance.voice = trinoidsVoice;
+                        }
+                        
+                        speechSynth.speak(speechUtterance);
+                    }
+                    
+                    // Show content immediately without typing
+                    const bulletsList = content.querySelector('.experience-bullets');
+                    if (bulletsList) {
+                        // Show all bullet points immediately
+                        const bullets = bulletsList.querySelectorAll('li');
+                        bullets.forEach(bullet => {
+                            bullet.style.opacity = '1';
+                        });
+                    }
                     return;
                 }
                 
@@ -1402,22 +1451,35 @@ function initClickableEntries() {
                 if (typingText) {
                     // Clear any existing text and cursor
                     typingText.innerHTML = '';
-                    // Start typing effect
-                    typeText(typingText, fullContent);
-                    // Play typing sound
-                    playTypingSound();
+                    // DON'T start typing effect - just show the content immediately
+                    typingText.textContent = fullContent;
+                    
+                    // Say "Mission Statement" when clicked
+                    if ('speechSynthesis' in window && speechEnabled) {
+                        const speechSynth = window.speechSynthesis;
+                        const speechUtterance = new SpeechSynthesisUtterance('Mission Statement');
+                        speechUtterance.rate = 0.8;
+                        speechUtterance.pitch = 0.8;
+                        speechUtterance.volume = 1.0;
+                        
+                        // Set voice
+                        const voices = speechSynth.getVoices();
+                        const trinoidsVoice = voices.find(voice => voice.name.includes('Trinoids'));
+                        if (trinoidsVoice) {
+                            speechUtterance.voice = trinoidsVoice;
+                        }
+                        
+                        speechSynth.speak(speechUtterance);
+                    }
                 } else {
-                    // For experience cards, go straight to bullet points without reading job info
+                    // For experience cards, show content immediately without typing
                     const bulletsList = content.querySelector('.experience-bullets');
                     if (bulletsList && entry.classList.contains('experience-card')) {
-                        // Hide all bullet points initially
+                        // Show all bullet points immediately
                         const bullets = bulletsList.querySelectorAll('li');
                         bullets.forEach(bullet => {
-                            bullet.style.opacity = '0';
+                            bullet.style.opacity = '1';
                         });
-                        
-                        // Start bullet points immediately without reading job info
-                        startBulletPointSequence(bullets);
                     }
                 }
                 
@@ -1458,9 +1520,25 @@ function initClickableEntries() {
                 const chevron = clickIndicator.querySelector('i');
                 chevron.className = 'fas fa-chevron-up';
                 
-                // Check if this is a category (timeline-category) - don't do speech/typing for categories
+                // Check if this is a category (timeline-category) - do speech for categories
                 if (entry.classList.contains('timeline-category')) {
-                    // For categories, just expand/collapse without speech or typing
+                    // For categories, do speech but no typing
+                    if ('speechSynthesis' in window && speechEnabled) {
+                        const speechSynth = window.speechSynthesis;
+                        const speechUtterance = new SpeechSynthesisUtterance(fullContent);
+                        speechUtterance.rate = 0.8;
+                        speechUtterance.pitch = 0.8;
+                        speechUtterance.volume = 1.0;
+                        
+                        // Set voice
+                        const voices = speechSynth.getVoices();
+                        const trinoidsVoice = voices.find(voice => voice.name.includes('Trinoids'));
+                        if (trinoidsVoice) {
+                            speechUtterance.voice = trinoidsVoice;
+                        }
+                        
+                        speechSynth.speak(speechUtterance);
+                    }
                     return;
                 }
                 
@@ -1468,22 +1546,35 @@ function initClickableEntries() {
                 if (typingText) {
                     // Clear any existing text and cursor
                     typingText.innerHTML = '';
-                    // Start typing effect
-                    typeText(typingText, fullContent);
-                    // Play typing sound
-                    playTypingSound();
+                    // DON'T start typing effect - just show the content immediately
+                    typingText.textContent = fullContent;
+                    
+                    // Say "Mission Statement" when clicked
+                    if ('speechSynthesis' in window && speechEnabled) {
+                        const speechSynth = window.speechSynthesis;
+                        const speechUtterance = new SpeechSynthesisUtterance('Mission Statement');
+                        speechUtterance.rate = 0.8;
+                        speechUtterance.pitch = 0.8;
+                        speechUtterance.volume = 1.0;
+                        
+                        // Set voice
+                        const voices = speechSynth.getVoices();
+                        const trinoidsVoice = voices.find(voice => voice.name.includes('Trinoids'));
+                        if (trinoidsVoice) {
+                            speechUtterance.voice = trinoidsVoice;
+                        }
+                        
+                        speechSynth.speak(speechUtterance);
+                    }
                 } else {
-                    // For experience cards, go straight to bullet points without reading job info
+                    // For experience cards, show content immediately without typing
                     const bulletsList = content.querySelector('.experience-bullets');
                     if (bulletsList && entry.classList.contains('experience-card')) {
-                        // Hide all bullet points initially
+                        // Show all bullet points immediately
                         const bullets = bulletsList.querySelectorAll('li');
                         bullets.forEach(bullet => {
-                            bullet.style.opacity = '0';
+                            bullet.style.opacity = '1';
                         });
-                        
-                        // Start bullet points immediately without reading job info
-                        startBulletPointSequence(bullets);
                     }
                 }
                 
@@ -1507,79 +1598,37 @@ function initClickableEntries() {
     });
 }
 
-// Function to handle bullet point sequence
-function startBulletPointSequence(bullets) {
-                        let bulletIndex = 0;
-                        let letterIndex = 0;
-                        let currentBullet = null;
-                        let originalText = '';
-                        let currentSpeechUtterance = null;
-                        
-                        const typeBulletPoints = () => {
-                            if (bulletIndex < bullets.length) {
-                                if (!currentBullet) {
-                                    // Start new bullet point
-                                    currentBullet = bullets[bulletIndex];
-                                    originalText = currentBullet.textContent;
-                                    currentBullet.textContent = '';
-                                    currentBullet.style.opacity = '1';
-                                    letterIndex = 0;
-                                    
-                                    // Start speaking this bullet point
-                                    if ('speechSynthesis' in window && speechEnabled) {
-                                        const speechSynth = window.speechSynthesis;
-                                        const speechUtterance = new SpeechSynthesisUtterance(originalText);
-                                        speechUtterance.rate = 0.5;
-                                        speechUtterance.pitch = 0.6;
-                                        speechUtterance.volume = 1.0;
-                                        
-                                        // Set voice
-                                        const voices = speechSynth.getVoices();
-                                        const trinoidsVoice = voices.find(voice => voice.name.includes('Trinoids'));
-                                        if (trinoidsVoice) {
-                                            speechUtterance.voice = trinoidsVoice;
-                                        }
-                                        
-                                        // Track speech
-                                        speechUtterance.onstart = () => {
-                                            isCurrentlySpeaking = true;
-                                            currentSpeechUtterance = speechUtterance;
-                                            console.log('🌿 Bullet point speech started:', originalText.substring(0, 50));
-                                        };
-                                        
-                                        speechUtterance.onend = () => {
-                                            isCurrentlySpeaking = false;
-                                            currentSpeechUtterance = null;
-                                            console.log('🌿 Bullet point speech ended');
-                                            
-                                            // Move to next bullet point after speech ends
-                                            bulletIndex++;
-                                            currentBullet = null;
-                                            if (bulletIndex < bullets.length) {
-                                                setTimeout(typeBulletPoints, 300); // Pause between bullet points
-                                            }
-                                        };
-                                        
-                                        speechSynth.speak(speechUtterance);
-                                    }
-                                }
-                                
-                                if (letterIndex < originalText.length) {
-                                    // Type next letter
-                                    currentBullet.textContent += originalText.charAt(letterIndex);
-                                    letterIndex++;
-                                    
-                                    // Play typing sound
-                                    playTypingSound();
-                                    
-                                    // Continue typing this bullet point
-                                    setTimeout(typeBulletPoints, 50); // Faster typing speed
-                                }
-                            }
-                        };
-                        
-                        // Start typing bullet points immediately
-                        setTimeout(typeBulletPoints, 200);
+
+
+// Typing effect function WITHOUT speech synthesis (for Mission Statement)
+function typeTextWithoutSpeech(element, text, speed = 80) {
+    let i = 0;
+    const cursor = document.createElement('span');
+    cursor.className = 'typing-cursor';
+    element.appendChild(cursor);
+    
+    function type() {
+        if (i < text.length) {
+            element.insertBefore(document.createTextNode(text.charAt(i)), cursor);
+            i++;
+            
+            // Play typing sound for each character with variation
+            if (i % 2 === 0) { // Play sound every 2 characters for more realistic typing
+                playTypingSound();
+            }
+            
+            // Continue typing
+            setTimeout(type, speed);
+        } else {
+            // Remove cursor when done
+            if (cursor.parentNode) {
+                cursor.parentNode.removeChild(cursor);
+            }
+        }
+    }
+    
+    // Start typing
+    type();
 }
 
 // Typing effect function with speech synthesis
