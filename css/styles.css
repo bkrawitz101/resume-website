@@ -1988,10 +1988,12 @@ body {
         margin-top: 1rem;
         position: relative;
         z-index: 9999;
+        background: rgba(255, 0, 0, 0.1); /* Debug: red background */
+        border: 2px solid red; /* Debug: red border */
     }
 
     .mobile-nav-main {
-        display: flex;
+        display: flex !important;
         align-items: center;
         justify-content: center;
         padding: 1rem;
@@ -2001,6 +2003,8 @@ body {
         cursor: pointer;
         transition: all 0.3s ease;
         margin-bottom: 1rem;
+        min-height: 60px; /* Debug: ensure minimum height */
+        color: white !important; /* Debug: ensure text is visible */
     }
 
     .mobile-nav-main:hover {
