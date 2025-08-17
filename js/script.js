@@ -7,10 +7,8 @@ function lazyLoadVideo(videoElement) {
     if (dataSrc && !videoElement.src) {
         videoElement.src = dataSrc;
         videoElement.load();
-        // Start playing if it should autoplay
-        if (videoElement.hasAttribute('autoplay')) {
-            videoElement.play().catch(e => console.log('Autoplay prevented:', e));
-        }
+        // Don't autoplay videos - wait for user interaction
+        console.log('🎬 Video loaded, waiting for user interaction');
     }
 }
 
@@ -123,22 +121,12 @@ function initBackgroundAudio() {
             }
         });
         
-        // Try to play audio on page load (only if video intro is not active)
+        // Don't try to autoplay audio - wait for explicit user interaction
         document.addEventListener('DOMContentLoaded', function() {
-            const videoIntro = document.getElementById('videoIntro');
-            // Only try autoplay if video intro is not present or hidden
-            if (!videoIntro || videoIntro.style.display === 'none') {
-                // Try to play audio (may be blocked by browser autoplay policy)
-                backgroundAudio.play().then(() => {
-                    audioBtn.innerHTML = '<i class="fas fa-volume-up"></i><span>Audio On</span>';
-                    audioBtn.classList.add('playing');
-                    console.log('🎵 Background audio autoplay successful');
-                }).catch(function(error) {
-                    console.log('Background audio autoplay blocked:', error);
-                    // Show button in muted state
-                    audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i><span>Enable Audio</span>';
-                });
-            }
+            console.log('🎵 Background audio ready, waiting for user interaction');
+            // Ensure button shows muted state initially
+            audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i><span>Enable Audio</span>';
+            audioBtn.classList.remove('playing');
         });
         
         console.log('🎵 Background audio initialized');
@@ -156,33 +144,11 @@ function initVideoIntro() {
         let videoDuration = 0;
         let currentTime = 0;
         
-        // Try to start audio immediately
+        // Prepare audio but don't autoplay - wait for user interaction
         if (backgroundAudio) {
             backgroundAudio.volume = 0.3;
             backgroundAudio.loop = true;
-            // Don't try to play immediately - wait for user interaction
             console.log('🎵 Background audio ready, waiting for user interaction');
-            
-            // Add event listeners to debug audio
-            backgroundAudio.addEventListener('loadstart', function() {
-                console.log('🎵 Audio load started');
-            });
-            
-            backgroundAudio.addEventListener('loadedmetadata', function() {
-                console.log('🎵 Audio metadata loaded');
-            });
-            
-            backgroundAudio.addEventListener('canplay', function() {
-                console.log('🎵 Audio can play');
-            });
-            
-            backgroundAudio.addEventListener('play', function() {
-                console.log('🎵 Audio started playing');
-            });
-            
-            backgroundAudio.addEventListener('error', function(e) {
-                console.log('🎵 Audio error:', e);
-            });
         }
         
         // Get video duration when metadata is loaded
@@ -319,54 +285,8 @@ function initVideoIntro() {
             }
         }
         
-        // Also try to start audio immediately when video is ready
-        introVideo.addEventListener('canplay', function() {
-            console.log('🎬 Video can play, attempting to start audio');
-            if (backgroundAudio && backgroundAudio.paused) {
-                startBackgroundAudio();
-            }
-        });
-        
-        // Fallback: if video doesn't autoplay, start after user interaction
-        document.addEventListener('click', function() {
-            if (introVideo.paused && videoIntro.style.display !== 'none') {
-                introVideo.play();
-            }
-            
-            // Also try to start audio on first user interaction
-            if (backgroundAudio && backgroundAudio.paused) {
-                startBackgroundAudio();
-            }
-        }, { once: true });
-        
-        // Try to start audio on any user interaction
-        document.addEventListener('mousedown', function() {
-            if (backgroundAudio && backgroundAudio.paused) {
-                startBackgroundAudio();
-            }
-        }, { once: true });
-        
-        document.addEventListener('keydown', function() {
-            if (backgroundAudio && backgroundAudio.paused) {
-                startBackgroundAudio();
-            }
-        }, { once: true });
-        
-        document.addEventListener('touchstart', function() {
-            if (backgroundAudio && backgroundAudio.paused) {
-                startBackgroundAudio();
-            }
-        }, { once: true });
-        
-        // Add click handler to video intro itself
-        if (videoIntro) {
-            videoIntro.addEventListener('click', function() {
-                console.log('🎬 Video intro clicked, starting audio');
-                if (backgroundAudio && backgroundAudio.paused) {
-                    startBackgroundAudio();
-                }
-            });
-        }
+        // Don't autoplay audio on any user interaction - wait for explicit button click
+        console.log('🎬 Video intro ready, audio will only start on button click');
         
         console.log('🎬 Video intro initialized');
     }
@@ -436,27 +356,14 @@ function testAudioElement() {
         backgroundAudio.volume = 0.3;
         backgroundAudio.loop = true;
         
-        // Try to play
-        const playPromise = backgroundAudio.play();
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
-                console.log('🎵 Audio started successfully!');
-                const audioBtn = document.getElementById('playAudioBtn');
-                if (audioBtn) {
-                    audioBtn.innerHTML = '<i class="fas fa-volume-up"></i><span>Audio On</span>';
-                    audioBtn.classList.add('playing');
-                }
-            }).catch((error) => {
-                console.log('🎵 Audio start failed:', error.name, error.message);
-                console.log('🎵 This is likely due to browser autoplay policy');
-                
-                // Show user-friendly message
-                const audioBtn = document.getElementById('playAudioBtn');
-                if (audioBtn) {
-                    audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i><span>Click to Enable Audio</span>';
-                    audioBtn.classList.remove('playing');
-                }
-            });
+        // Don't autoplay - wait for user to click the button
+        console.log('🎵 Audio ready, waiting for user to click Enable Audio button');
+        
+        // Ensure button shows muted state
+        const audioBtn = document.getElementById('playAudioBtn');
+        if (audioBtn) {
+            audioBtn.innerHTML = '<i class="fas fa-volume-up"></i><span>Enable Audio</span>';
+            audioBtn.classList.remove('playing');
         }
     } else {
         console.log('🎵 No audio element found!');
@@ -608,18 +515,8 @@ function startVideoSequence() {
                     introVideo.play().then(() => {
                         console.log('🎬 Video started');
                         
-                        // Start audio when video starts
-                        if (backgroundAudio && audioBtn) {
-                            backgroundAudio.volume = 0.3;
-                            backgroundAudio.loop = true;
-                            backgroundAudio.play().then(() => {
-                                console.log('🎵 Audio started with video');
-                                audioBtn.innerHTML = '<i class="fas fa-volume-up"></i><span>Audio On</span>';
-                                audioBtn.classList.add('playing');
-                            }).catch((error) => {
-                                console.log('🎵 Audio failed:', error);
-                            });
-                        }
+                        // Don't autoplay audio - wait for user to click the button
+                        console.log('🎵 Video started, audio will only start on button click');
             
             // Clean up supernova explosion container after video starts
             setTimeout(() => {
@@ -1015,11 +912,8 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('resize', loadVisibleVideos);
 });
 
-// Listen for user interactions to start audio (fallback)
-document.addEventListener('click', startAudioOnInteraction, { once: true });
-document.addEventListener('mousedown', startAudioOnInteraction, { once: true });
-document.addEventListener('keydown', startAudioOnInteraction, { once: true });
-document.addEventListener('touchstart', startAudioOnInteraction, { once: true });
+// Don't autoplay audio on user interactions - wait for explicit button click
+console.log('🎵 Audio will only start when user clicks the Enable Audio button');
 
 // Global function to show section - accessible from anywhere
 function showSection(sectionId) {
