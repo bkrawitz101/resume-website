@@ -1,6 +1,40 @@
 // Simple test to see if JavaScript is running
 console.log('🧪 JavaScript file loaded successfully');
 
+// Lazy loading for videos
+function lazyLoadVideo(videoElement) {
+    const dataSrc = videoElement.dataset.src;
+    if (dataSrc && !videoElement.src) {
+        videoElement.src = dataSrc;
+        videoElement.load();
+        // Start playing if it should autoplay
+        if (videoElement.hasAttribute('autoplay')) {
+            videoElement.play().catch(e => console.log('Autoplay prevented:', e));
+        }
+    }
+}
+
+// Load videos when they become visible
+function loadVisibleVideos() {
+    const videos = document.querySelectorAll('video[data-src]');
+    videos.forEach(video => {
+        if (isElementInViewport(video)) {
+            lazyLoadVideo(video);
+        }
+    });
+}
+
+// Check if element is in viewport
+function isElementInViewport(el) {
+    const rect = el.getBoundingClientRect();
+    return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
+}
+
 // Global function to start background audio
 function startBackgroundAudioGlobal() {
     console.log('🎵 Global: Attempting to start background audio...');
@@ -972,6 +1006,13 @@ function startAudioOnInteraction() {
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 DOM Content Loaded - Starting initialization');
     initInitiateSequence();
+    
+    // Initialize lazy loading
+    loadVisibleVideos();
+    
+    // Add scroll listener for lazy loading
+    window.addEventListener('scroll', loadVisibleVideos);
+    window.addEventListener('resize', loadVisibleVideos);
 });
 
 // Listen for user interactions to start audio (fallback)

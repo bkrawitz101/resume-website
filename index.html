@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Brian Krawitz - Creative Technology Evangelist</title>
-    <link rel="stylesheet" href="css/styles.css?v=1137&cache=bust64&force=true">
+    <link rel="stylesheet" href="css/styles.css?v=1138&cache=bust65&force=true">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
@@ -43,7 +43,7 @@
 
     <!-- Video Intro Overlay -->
     <div id="videoIntro" class="video-intro">
-        <video id="introVideo" class="intro-video" muted playsinline webkit-playsinline>
+        <video id="introVideo" class="intro-video" muted playsinline webkit-playsinline preload="none">
             <source src="assets/video/Retro_Futuristic_City_Sunrise_Video.mp4" type="video/mp4">
             Your browser does not support the video element.
         </video>
@@ -59,7 +59,8 @@
     </div>
 
     <!-- Background Audio -->
-    <audio id="backgroundAudio" loop preload="auto">
+    <audio id="backgroundAudio" loop preload="none">
+        <source src="assets/audio/Music_optimized.mp3" type="audio/mpeg">
         <source src="assets/audio/Music.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
@@ -86,7 +87,8 @@
                 <div class="header-card">
                     <div class="header-content-wrapper">
                         <div class="header-background-video">
-                            <video autoplay muted loop playsinline>
+                            <video muted loop playsinline preload="none" data-src="assets/video/Starfield_optimized.webm">
+                                <source src="" type="video/webm">
                                 <source src="assets/video/Starfield.mp4" type="video/mp4">
                             </video>
                         </div>
@@ -1020,6 +1022,6 @@
         </main>
     </div>
 
-    <script src="js/script.js?v=18"></script>
+    <script src="js/script.js?v=19"></script>
 </body>
 </html> 
