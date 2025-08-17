@@ -934,7 +934,7 @@ body {
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
     overflow: visible;
     position: fixed;
-    z-index: 200;
+    z-index: 300;
     left: 20px;
     right: 20px;
 }
@@ -945,8 +945,9 @@ body {
     padding: 0 2rem;
     overflow: visible;
     position: relative;
-    z-index: 1005;
+    z-index: 1000;
     width: 100%;
+    transform: translateZ(0);
 }
 
 .nav-tabs {
@@ -1010,15 +1011,16 @@ body {
     gap: 2rem;
     justify-content: center;
     align-items: center;
-    padding: 1rem;
+    padding: 2rem;
     background: rgba(0, 0, 0, 0.9);
     border-radius: 25px;
     box-shadow: 0 0 40px rgba(0, 212, 255, 0.4);
     position: fixed;
     overflow: visible;
-    z-index: 1005;
+    z-index: 1000;
     left: 20px;
     right: 20px;
+    transform: translateZ(0);
 }
 
 
@@ -1027,6 +1029,8 @@ body {
     border-radius: 50%;
     background: radial-gradient(circle, rgba(0, 212, 255, 0.3), rgba(0, 0, 0, 0.9));
     border: 2px solid #00d4ff;
+    position: relative;
+    z-index: 301;
     color: #00d4ff;
     display: flex;
     flex-direction: column;
@@ -1113,8 +1117,9 @@ body {
     border-color: #ffffff;
     color: #ffffff;
     text-shadow: 0 0 20px rgba(0, 212, 255, 1);
-    z-index: 10000;
+    z-index: 9999;
     background: radial-gradient(circle, rgba(0, 212, 255, 0.5), rgba(0, 0, 0, 0.9));
+    position: relative;
 }
 
 .neural .nav-tab:hover i {
@@ -2401,18 +2406,132 @@ body {
         -webkit-backface-visibility: hidden;
     }
     
-    .container {
-        -webkit-overflow-scrolling: touch;
+    /* Completely disable console wrapper on mobile */
+    .console-wrapper {
+        display: none !important;
     }
     
-    /* Disable expensive effects on mobile */
+    /* Reset all positioning for mobile */
+    .header,
+    .top-nav,
+    .neural .nav-tabs,
+    .container,
+    #page.site,
+    .site-footer,
+    .mobile-nav-tree {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        margin: 10px !important;
+        max-width: calc(100vw - 20px) !important;
+    }
+    
+    /* Mobile-specific layout */
     .header {
-        backdrop-filter: none;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
-        padding: 1rem 0;
-        min-height: 140px;
-        border-radius: 25px;
-        border-top: 2px solid rgba(0, 212, 255, 0.4);
+        backdrop-filter: none !important;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3) !important;
+        padding: 1rem 0 !important;
+        min-height: 140px !important;
+        border-radius: 25px !important;
+        border-top: 2px solid rgba(0, 212, 255, 0.4) !important;
+        z-index: 100 !important;
+        margin-bottom: 20px !important;
+    }
+    
+    .top-nav {
+        z-index: 100 !important;
+        margin-bottom: 20px !important;
+    }
+    
+    .neural .nav-tabs {
+        z-index: 100 !important;
+        margin-bottom: 20px !important;
+    }
+    
+    .container {
+        -webkit-overflow-scrolling: touch;
+        z-index: 100 !important;
+        margin-top: 0 !important;
+    }
+    
+    #page.site {
+        z-index: 100 !important;
+        margin-top: 0 !important;
+    }
+    
+    .site-footer {
+        z-index: 100 !important;
+        margin-top: 20px !important;
+    }
+    
+    /* Ensure main content starts below header and nav */
+    .main-content {
+        margin-top: 0 !important;
+        padding-top: 2rem !important;
+        position: relative !important;
+        z-index: 100 !important;
+        max-width: calc(100vw - 20px) !important;
+        margin-left: 10px !important;
+        margin-right: 10px !important;
+    }
+    
+    /* Fix mobile navigation overlap */
+    .mobile-nav-tree {
+        margin-bottom: 20px !important;
+        z-index: 100 !important;
+        position: relative !important;
+        display: block !important;
+    }
+    
+    .mobile-nav-tree.active {
+        margin-bottom: 40px !important;
+    }
+    
+    .mobile-nav-submenu {
+        margin-bottom: 20px !important;
+        z-index: 100 !important;
+        position: relative !important;
+    }
+    
+    /* Force main content to start below mobile nav */
+    .main-content {
+        clear: both !important;
+        margin-top: 0 !important;
+        padding-top: 2rem !important;
+        position: relative !important;
+        z-index: 100 !important;
+        max-width: calc(100vw - 20px) !important;
+        margin-left: 10px !important;
+        margin-right: 10px !important;
+    }
+    
+    /* Ensure proper spacing after mobile nav */
+    .container,
+    #page.site {
+        margin-top: 20px !important;
+        clear: both !important;
+    }
+    
+    /* Aggressive mobile nav isolation */
+    .mobile-nav-tree,
+    .mobile-nav-main,
+    .mobile-nav-submenu {
+        float: none !important;
+        clear: both !important;
+        position: relative !important;
+        z-index: 100 !important;
+    }
+    
+    /* Force content separation */
+    .main-content::before {
+        content: '';
+        display: block;
+        clear: both;
+        height: 0;
+        margin: 0;
+        padding: 0;
     }
     
     .header-card,
@@ -2452,13 +2571,32 @@ body {
         padding: 0 1rem;
     }
     
+    /* Fix navigation for mobile */
+    .top-nav {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        margin: 10px !important;
+        z-index: 100 !important;
+    }
+    
+    .neural .nav-tabs {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        margin: 10px !important;
+        z-index: 100 !important;
+    }
+    
     .main-content {
         padding: 2rem 1rem;
-        margin-top: 120px;
+        margin-top: 20px;
         -webkit-overflow-scrolling: touch;
         padding-top: 1rem;
         position: relative;
-        z-index: 1;
+        z-index: 100;
     }
     
         .nav-tabs {
@@ -2476,12 +2614,15 @@ body {
         border-bottom-color: transparent;
     }
 
-    /* Mobile Navigation Tree */
+    /* Mobile Navigation Tree - Now positioned between header and main content */
     .mobile-nav-tree {
         display: block !important;
-        margin-top: 1rem;
-        position: relative;
-        z-index: 9999;
+        margin: 20px 10px !important;
+        position: relative !important;
+        z-index: 100 !important;
+        clear: both !important;
+        width: calc(100vw - 20px) !important;
+        max-width: calc(100vw - 20px) !important;
     }
 
     .mobile-nav-main {
@@ -2494,7 +2635,7 @@ body {
         border-radius: 8px;
         cursor: pointer;
         transition: all 0.3s ease;
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
     }
 
     .mobile-nav-main:hover {
@@ -2529,12 +2670,13 @@ body {
         margin-left: 1rem;
         border-left: 2px solid currentColor;
         padding-left: 1rem;
-        position: relative;
-        z-index: 10000;
+        position: relative !important;
+        z-index: 100 !important;
         background: rgba(0, 0, 0, 0.95);
         border-radius: 8px;
         padding: 1rem;
         margin-top: 0.5rem;
+        margin-bottom: 20px !important;
     }
 
     .mobile-nav-tree.active .mobile-nav-submenu {
@@ -2543,7 +2685,8 @@ body {
     
     /* Ensure mobile menu appears above content */
     .mobile-nav-tree.active {
-        z-index: 9999;
+        z-index: 100 !important;
+        margin-bottom: 40px !important;
     }
 
     .mobile-nav-item {
@@ -2559,7 +2702,7 @@ body {
         font-size: 0.9rem;
         color: rgba(255, 255, 255, 0.9);
         position: relative;
-        z-index: 10001;
+        z-index: 100;
     }
 
     .mobile-nav-item:hover {
