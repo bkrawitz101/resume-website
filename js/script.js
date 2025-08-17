@@ -987,39 +987,39 @@ function showSection(sectionId) {
     // Find elements fresh each time to avoid scope issues
     const contentSections = document.querySelectorAll('.content-section');
     const navTabs = document.querySelectorAll('.nav-tab');
-    
+
     console.log('🔄 Found content sections:', contentSections.length);
     console.log('🔄 Found nav tabs:', navTabs.length);
     
-    // Hide all sections
-    contentSections.forEach(section => {
-        section.classList.remove('active');
+        // Hide all sections
+        contentSections.forEach(section => {
+            section.classList.remove('active');
         console.log('🔄 Removed active from section:', section.id);
-    });
+        });
 
-    // Remove active class from all nav tabs
-    navTabs.forEach(tab => {
-        tab.classList.remove('active');
-    });
+        // Remove active class from all nav tabs
+        navTabs.forEach(tab => {
+            tab.classList.remove('active');
+        });
 
-    // Show target section
-    const targetSection = document.getElementById(sectionId);
-    if (targetSection) {
-        targetSection.classList.add('active');
+        // Show target section
+        const targetSection = document.getElementById(sectionId);
+        if (targetSection) {
+            targetSection.classList.add('active');
         console.log('🔄 Added active to section:', sectionId);
     } else {
         console.error('❌ Section not found:', sectionId);
-    }
+        }
 
-    // Add active class to clicked nav tab
-    const activeTab = document.querySelector(`[data-section="${sectionId}"]`);
-    if (activeTab) {
-        activeTab.classList.add('active');
+        // Add active class to clicked nav tab
+        const activeTab = document.querySelector(`[data-section="${sectionId}"]`);
+        if (activeTab) {
+            activeTab.classList.add('active');
         console.log('🔄 Added active to nav tab:', sectionId);
     } else {
         console.log('⚠️ Nav tab not found for section:', sectionId);
+        }
     }
-}
 
 // Navigation functionality
 document.addEventListener('DOMContentLoaded', function() {
@@ -1408,24 +1408,27 @@ function initClickableEntries() {
                 const chevron = clickIndicator.querySelector('i');
                 chevron.className = 'fas fa-chevron-up';
                 
-                // Check if this is a category (timeline-category or experience-category) - do speech for categories
-                if (entry.classList.contains('timeline-category') || entry.classList.contains('experience-category')) {
-                    // For categories, do speech but no typing
+                // Check if this is a category (timeline-category, experience-category, or project-category) - do speech for categories
+                if (entry.classList.contains('timeline-category') || entry.classList.contains('experience-category') || entry.classList.contains('project-category')) {
+                    // For categories, say only the category title
                     if ('speechSynthesis' in window && speechEnabled) {
-                        const speechSynth = window.speechSynthesis;
-                        const speechUtterance = new SpeechSynthesisUtterance(fullContent);
-                        speechUtterance.rate = 0.8;
-                        speechUtterance.pitch = 0.8;
-                        speechUtterance.volume = 1.0;
-                        
-                        // Set voice
-                        const voices = speechSynth.getVoices();
-                        const trinoidsVoice = voices.find(voice => voice.name.includes('Trinoids'));
-                        if (trinoidsVoice) {
-                            speechUtterance.voice = trinoidsVoice;
+                        const categoryTitle = entry.querySelector('.category-title');
+                        if (categoryTitle) {
+                            const speechSynth = window.speechSynthesis;
+                            const speechUtterance = new SpeechSynthesisUtterance(categoryTitle.textContent);
+                            speechUtterance.rate = 0.8;
+                            speechUtterance.pitch = 0.8;
+                            speechUtterance.volume = 1.0;
+                            
+                            // Set voice
+                            const voices = speechSynth.getVoices();
+                            const trinoidsVoice = voices.find(voice => voice.name.includes('Trinoids'));
+                            if (trinoidsVoice) {
+                                speechUtterance.voice = trinoidsVoice;
+                            }
+                            
+                            speechSynth.speak(speechUtterance);
                         }
-                        
-                        speechSynth.speak(speechUtterance);
                     }
                     return;
                 }
@@ -1435,8 +1438,41 @@ function initClickableEntries() {
                     // Get the job title from the header
                     const jobTitle = entry.querySelector('.entry-header h4');
                     if (jobTitle && 'speechSynthesis' in window && speechEnabled) {
-                        const speechSynth = window.speechSynthesis;
+                                        const speechSynth = window.speechSynthesis;
                         const speechUtterance = new SpeechSynthesisUtterance(jobTitle.textContent);
+                        speechUtterance.rate = 0.8;
+                        speechUtterance.pitch = 0.8;
+                                        speechUtterance.volume = 1.0;
+                                        
+                                        // Set voice
+                                        const voices = speechSynth.getVoices();
+                                        const trinoidsVoice = voices.find(voice => voice.name.includes('Trinoids'));
+                                        if (trinoidsVoice) {
+                                            speechUtterance.voice = trinoidsVoice;
+                                        }
+                                        
+                                        speechSynth.speak(speechUtterance);
+                                    }
+                    
+                    // Show content immediately without typing
+                    const bulletsList = content.querySelector('.experience-bullets');
+                    if (bulletsList) {
+                        // Show all bullet points immediately
+                        const bullets = bulletsList.querySelectorAll('li');
+                        bullets.forEach(bullet => {
+                            bullet.style.opacity = '1';
+                        });
+                    }
+                    return;
+                }
+                
+                // For project cards, do speech for project titles but no typing
+                if (entry.classList.contains('project-card')) {
+                    // Get the project title from the header
+                    const projectTitle = entry.querySelector('.entry-header h4');
+                    if (projectTitle && 'speechSynthesis' in window && speechEnabled) {
+                        const speechSynth = window.speechSynthesis;
+                        const speechUtterance = new SpeechSynthesisUtterance(projectTitle.textContent);
                         speechUtterance.rate = 0.8;
                         speechUtterance.pitch = 0.8;
                         speechUtterance.volume = 1.0;
@@ -1447,9 +1483,9 @@ function initClickableEntries() {
                         if (trinoidsVoice) {
                             speechUtterance.voice = trinoidsVoice;
                         }
-                        
-                        speechSynth.speak(speechUtterance);
-                    }
+                                        
+                                        speechSynth.speak(speechUtterance);
+                                    }
                     
                     // Show content immediately without typing
                     const bulletsList = content.querySelector('.experience-bullets');
@@ -1488,9 +1524,9 @@ function initClickableEntries() {
                         speechSynth.speak(speechUtterance);
                     }
                 } else {
-                    // For experience cards, show content immediately without typing
+                    // For experience cards and project cards, show content immediately without typing
                     const bulletsList = content.querySelector('.experience-bullets');
-                    if (bulletsList && entry.classList.contains('experience-card')) {
+                    if (bulletsList && (entry.classList.contains('experience-card') || entry.classList.contains('project-card'))) {
                         // Show all bullet points immediately
                         const bullets = bulletsList.querySelectorAll('li');
                         bullets.forEach(bullet => {
@@ -1536,25 +1572,25 @@ function initClickableEntries() {
                 const chevron = clickIndicator.querySelector('i');
                 chevron.className = 'fas fa-chevron-up';
                 
-                // Check if this is a category (timeline-category) - do speech for categories
-                if (entry.classList.contains('timeline-category')) {
+                // Check if this is a category (timeline-category, experience-category, or project-category) - do speech for categories
+                if (entry.classList.contains('timeline-category') || entry.classList.contains('experience-category') || entry.classList.contains('project-category')) {
                     // For categories, do speech but no typing
-                    if ('speechSynthesis' in window && speechEnabled) {
-                        const speechSynth = window.speechSynthesis;
+                                    if ('speechSynthesis' in window && speechEnabled) {
+                                        const speechSynth = window.speechSynthesis;
                         const speechUtterance = new SpeechSynthesisUtterance(fullContent);
                         speechUtterance.rate = 0.8;
                         speechUtterance.pitch = 0.8;
-                        speechUtterance.volume = 1.0;
-                        
-                        // Set voice
-                        const voices = speechSynth.getVoices();
-                        const trinoidsVoice = voices.find(voice => voice.name.includes('Trinoids'));
-                        if (trinoidsVoice) {
-                            speechUtterance.voice = trinoidsVoice;
-                        }
-                        
-                        speechSynth.speak(speechUtterance);
-                    }
+                                        speechUtterance.volume = 1.0;
+                                        
+                                        // Set voice
+                                        const voices = speechSynth.getVoices();
+                                        const trinoidsVoice = voices.find(voice => voice.name.includes('Trinoids'));
+                                        if (trinoidsVoice) {
+                                            speechUtterance.voice = trinoidsVoice;
+                                        }
+                                        
+                                        speechSynth.speak(speechUtterance);
+                                    }
                     return;
                 }
                 
@@ -1583,9 +1619,9 @@ function initClickableEntries() {
                         speechSynth.speak(speechUtterance);
                     }
                 } else {
-                    // For experience cards, show content immediately without typing
+                    // For experience cards and project cards, show content immediately without typing
                     const bulletsList = content.querySelector('.experience-bullets');
-                    if (bulletsList && entry.classList.contains('experience-card')) {
+                    if (bulletsList && (entry.classList.contains('experience-card') || entry.classList.contains('project-card'))) {
                         // Show all bullet points immediately
                         const bullets = bulletsList.querySelectorAll('li');
                         bullets.forEach(bullet => {
