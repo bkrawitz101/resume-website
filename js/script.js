@@ -1,36 +1,43 @@
 // Simple test to see if JavaScript is running
 console.log('🧪 JavaScript file loaded successfully');
 
-// Lazy loading for videos
-function lazyLoadVideo(videoElement) {
-    const dataSrc = videoElement.dataset.src;
-    if (dataSrc && !videoElement.src) {
-        videoElement.src = dataSrc;
-        videoElement.load();
-        // Don't autoplay videos - wait for user interaction
-        console.log('🎬 Video loaded, waiting for user interaction');
+// --- Video & Asset Lazy Loading ---
+function initLazyLoading() {
+    // Target all videos that have the "lazy" class
+    const lazyVideos = document.querySelectorAll("video.lazy");
+
+    if ("IntersectionObserver" in window) {
+        // Create a new observer
+        let lazyVideoObserver = new IntersectionObserver(function(entries, observer) {
+            entries.forEach(function(videoEntry) {
+                // If the video is in the viewport
+                if (videoEntry.isIntersecting) {
+                    const video = videoEntry.target;
+                    // Find all <source> tags within the video
+                    for (const source of video.children) {
+                        if (source.tagName === "SOURCE" && source.dataset.src) {
+                            // Set the src from the data-src attribute
+                            source.src = source.dataset.src;
+                        }
+                    }
+                    // Load and play the video, then stop observing it
+                    video.load();
+                    const playPromise = video.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => console.error("Lazy-load video play failed:", error));
+                    }
+                    video.classList.remove("lazy");
+                    lazyVideoObserver.unobserve(video);
+                    console.log('🎬 Lazy-loaded video:', video);
+                }
+            });
+        });
+
+        // Observe each lazy video
+        lazyVideos.forEach(function(lazyVideo) {
+            lazyVideoObserver.observe(lazyVideo);
+        });
     }
-}
-
-// Load videos when they become visible
-function loadVisibleVideos() {
-    const videos = document.querySelectorAll('video[data-src]');
-    videos.forEach(video => {
-        if (isElementInViewport(video)) {
-            lazyLoadVideo(video);
-        }
-    });
-}
-
-// Check if element is in viewport
-function isElementInViewport(el) {
-    const rect = el.getBoundingClientRect();
-    return (
-        rect.top >= 0 &&
-        rect.left >= 0 &&
-        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-    );
 }
 
 // Global function to start background audio
@@ -903,13 +910,7 @@ function startAudioOnInteraction() {
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 DOM Content Loaded - Starting initialization');
     initInitiateSequence();
-    
-    // Initialize lazy loading
-    loadVisibleVideos();
-    
-    // Add scroll listener for lazy loading
-    window.addEventListener('scroll', loadVisibleVideos);
-    window.addEventListener('resize', loadVisibleVideos);
+    initLazyLoading();
 });
 
 // Don't autoplay audio on user interactions - wait for explicit button click
