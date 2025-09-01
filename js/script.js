@@ -125,7 +125,7 @@ function initBackgroundAudio() {
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🎵 Background audio ready, waiting for user interaction');
             // Ensure button shows muted state initially
-            audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i><span>Enable Audio</span>';
+                    audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i><span>Enable Audio</span>';
             audioBtn.classList.remove('playing');
         });
         
@@ -360,10 +360,10 @@ function testAudioElement() {
         console.log('🎵 Audio ready, waiting for user to click Enable Audio button');
         
         // Ensure button shows muted state
-        const audioBtn = document.getElementById('playAudioBtn');
-        if (audioBtn) {
+                const audioBtn = document.getElementById('playAudioBtn');
+                if (audioBtn) {
             audioBtn.innerHTML = '<i class="fas fa-volume-up"></i><span>Enable Audio</span>';
-            audioBtn.classList.remove('playing');
+                    audioBtn.classList.remove('playing');
         }
     } else {
         console.log('🎵 No audio element found!');

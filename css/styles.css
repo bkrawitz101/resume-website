@@ -2598,9 +2598,9 @@ body {
     }
     
     .header-profile .profile-picture {
-        width: 220px !important;
-        height: 220px !important;
-        border-radius: 110px !important;
+        width: 180px !important;
+        height: 180px !important;
+        border-radius: 90px !important;
         margin: 0 auto 1rem auto !important;
         display: block !important;
     }
@@ -2721,7 +2721,7 @@ body {
     }
 
     .mobile-nav-tree.active .mobile-nav-submenu {
-        display: block;
+        display: block !important;
     }
     
     /* Ensure mobile menu appears above content */

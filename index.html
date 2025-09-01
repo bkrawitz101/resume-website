@@ -5,10 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Brian Krawitz - Creative Technology Evangelist</title>
-    <link rel="stylesheet" href="css/styles.css?v=1152&cache=bust79&force=true">
+    <link rel="stylesheet" href="css/styles.css?v=1150&cache=bust77&force=true">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+    <style>
+        /* Default styles for desktop and larger screens */
+        .mobile-nav-tree {
+            display: none !important;
+        }
+
+        /* Styles for mobile and tablet screens (e.g., <= 768px) */
+        @media (max-width: 768px) {
+            /* Hide the desktop navigation tabs */
+            .top-nav .nav-tabs {
+                display: none !important;
+            }
+
+            /* Show the mobile navigation tree */
+            .mobile-nav-tree {
+                display: block !important;
+            }
+        }
+    </style>
 
 </head>
 <body>
@@ -60,7 +78,8 @@
 
     <!-- Background Audio -->
     <audio id="backgroundAudio" loop preload="none">
-        <source src="assets/audio/Music_optimized.ogg" type="audio/ogg">
+        <source src="assets/audio/Music_optimized.mp3" type="audio/mpeg">
+        <source src="assets/audio/Music.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
     
@@ -87,7 +106,8 @@
                     <div class="header-content-wrapper">
                         <div class="header-background-video">
                             <video muted loop playsinline preload="none" data-src="assets/video/Starfield_optimized.webm">
-                                <source src="assets/video/Starfield_optimized.webm" type="video/webm">
+                                <source src="" type="video/webm">
+                                <source src="assets/video/Starfield.mp4" type="video/mp4">
                             </video>
                         </div>
                         <div class="header-profile">
@@ -179,7 +199,7 @@
         <main class="main-content">
             <div class="main-content-background-video">
                 <video autoplay muted loop playsinline>
-                    <source src="assets/video/Starfield_optimized.webm" type="video/webm">
+                    <source src="assets/video/Starfield.mp4" type="video/mp4">
                 </video>
             </div>
             <!-- About Section with 2001 Styling -->
@@ -199,9 +219,9 @@
                         </div>
                         <div class="entry-content">
                             <div class="mission-video-background">
-                                                <video autoplay muted loop playsinline>
-                    <source src="assets/video/Path_Of_Flow_optimized.webm" type="video/webm">
-                </video>
+                                <video autoplay muted loop playsinline>
+                                    <source src="assets/video/Path_Of_Flow.mp4" type="video/mp4">
+                                </video>
                             </div>
                             <div class="hal-voice">
                                 <span class="hal-text">"I'm sorry, Dave. I'm afraid I can't do that."</span>
@@ -243,7 +263,7 @@
                                 <div class="entry-content">
                                     <div class="experience-video-background">
                                         <video autoplay muted loop playsinline>
-                                            <source src="assets/video/Starfield_optimized.webm" type="video/webm">
+                                            <source src="assets/video/Starfield.mp4" type="video/mp4">
                                         </video>
                                     </div>
                                     <ul class="experience-bullets">
@@ -269,7 +289,7 @@
                                 <div class="entry-content">
                                     <div class="experience-video-background">
                                         <video autoplay muted loop playsinline>
-                                            <source src="assets/video/Starfield_optimized.webm" type="video/webm">
+                                            <source src="assets/video/Starfield.mp4" type="video/mp4">
                                         </video>
                                     </div>
                                     <ul class="experience-bullets">
@@ -297,7 +317,7 @@
                                 <div class="entry-content">
                                     <div class="experience-video-background">
                                         <video autoplay muted loop playsinline>
-                                            <source src="assets/video/Starfield_optimized.webm" type="video/webm">
+                                            <source src="assets/video/Starfield.mp4" type="video/mp4">
                                         </video>
                                     </div>
                                     <ul class="experience-bullets">
@@ -338,7 +358,7 @@
                                 <div class="entry-content">
                                     <div class="experience-video-background">
                                         <video autoplay muted loop playsinline>
-                                            <source src="assets/video/Starfield_optimized.webm" type="video/webm">
+                                            <source src="assets/video/Starfield.mp4" type="video/mp4">
                                         </video>
                                     </div>
                                     <ul class="experience-bullets">
@@ -368,7 +388,7 @@
                                 <div class="entry-content">
                                     <div class="experience-video-background">
                                         <video autoplay muted loop playsinline>
-                                            <source src="assets/video/Starfield_optimized.webm" type="video/webm">
+                                            <source src="assets/video/Starfield.mp4" type="video/mp4">
                                         </video>
                                     </div>
                                     <ul class="experience-bullets">
@@ -414,7 +434,7 @@
                                 <div class="entry-content">
                                     <div class="experience-video-background">
                                         <video autoplay muted loop playsinline>
-                                            <source src="assets/video/Starfield_optimized.webm" type="video/webm">
+                                            <source src="assets/video/Starfield.mp4" type="video/mp4">
                                         </video>
                                     </div>
                                     <ul class="experience-bullets">
@@ -440,7 +460,7 @@
                                 <div class="entry-content">
                                     <div class="experience-video-background">
                                         <video autoplay muted loop playsinline>
-                                            <source src="assets/video/Starfield_optimized.webm" type="video/webm">
+                                            <source src="assets/video/Starfield.mp4" type="video/mp4">
                                         </video>
                                     </div>
                                     <ul class="experience-bullets">
@@ -467,7 +487,7 @@
                                 <div class="entry-content">
                                     <div class="experience-video-background">
                                         <video autoplay muted loop playsinline>
-                                            <source src="assets/video/Starfield_optimized.webm" type="video/webm">
+                                            <source src="assets/video/Starfield.mp4" type="video/mp4">
                                         </video>
                                     </div>
                                     <ul class="experience-bullets">
@@ -508,7 +528,7 @@
                                 <div class="entry-content">
                                     <div class="experience-video-background">
                                         <video autoplay muted loop playsinline>
-                                            <source src="assets/video/Starfield_optimized.webm" type="video/webm">
+                                            <source src="assets/video/Starfield.mp4" type="video/mp4">
                                         </video>
                                     </div>
                                     <ul class="experience-bullets">
@@ -555,7 +575,7 @@
                                 <div class="entry-content">
                                     <div class="experience-video-background">
                                         <video autoplay muted loop playsinline>
-                                            <source src="assets/video/Starfield_optimized.webm" type="video/webm">
+                                            <source src="assets/video/Starfield.mp4" type="video/mp4">
                                         </video>
                                     </div>
                                     <ul class="experience-bullets">
@@ -581,7 +601,7 @@
                                 <div class="entry-content">
                                     <div class="experience-video-background">
                                         <video autoplay muted loop playsinline>
-                                            <source src="assets/video/Starfield_optimized.webm" type="video/webm">
+                                            <source src="assets/video/Starfield.mp4" type="video/mp4">
                                         </video>
                                     </div>
                                     <ul class="experience-bullets">
@@ -608,24 +628,20 @@
                                 <div class="entry-content">
                                     <div class="experience-video-background">
                                         <video autoplay muted loop playsinline>
-                                            <source src="assets/video/Starfield_optimized.webm" type="video/webm">
+                                            <source src="assets/video/Starfield.mp4" type="video/mp4">
                                         </video>
                                     </div>
                                     <ul class="experience-bullets">
                                         <li>Educational virtual reality environments for Teaching English to Speakers of Other Languages</li>
                                     </ul>
+                                    <p>Immersive and interactive virtual reality experience, based in Altspace, designed for a more modern day example of education 2.0 using existing 3rd party designed 3D assets and integrating for proof of concept.</p>
                                     <div class="project-links">
-                                        <a href="#" target="_blank" class="project-link">View Project</a>
+                                        <a href="https://youtu.be/v3vbtbwxmjM" target="_blank" class="project-link">Virtual Reality TESOL Demo</a>
+                                        <a href="https://mstina.net" target="_blank" class="project-link">Tina Liu's UCLA TESOL course Lesson Plans</a>
+                                        <a href="https://youtu.be/R71L43TmVR0" target="_blank" class="project-link">My i-to-i TEFL online certificate lesson plan</a>
                                     </div>
                                 </div>
                             </div>
-                                </div>
-                                <p>Immersive and interactive virtual reality experience, based in Altspace, designed for a more modern day example of education 2.0 using existing 3rd party designed 3D assets and integrating for proof of concept.</p>
-                                <div class="project-links">
-                                    <a href="https://youtu.be/v3vbtbwxmjM" target="_blank" class="project-link">Virtual Reality TESOL Demo</a>
-                                    <a href="https://mstina.net" target="_blank" class="project-link">Tina Liu's UCLA TESOL course Lesson Plans</a>
-                                    <a href="https://youtu.be/R71L43TmVR0" target="_blank" class="project-link">My i-to-i TEFL online certificate lesson plan</a>
-                                </div>
                             </div>
                         </div>
                             </div>
@@ -656,7 +672,7 @@
                                 <div class="entry-content">
                                     <div class="experience-video-background">
                                         <video autoplay muted loop playsinline>
-                                            <source src="assets/video/Starfield_optimized.webm" type="video/webm">
+                                            <source src="assets/video/Starfield.mp4" type="video/mp4">
                                         </video>
                                     </div>
                                     <ul class="experience-bullets">
@@ -685,7 +701,7 @@
                                 <div class="entry-content">
                                     <div class="experience-video-background">
                                         <video autoplay muted loop playsinline>
-                                            <source src="assets/video/Starfield_optimized.webm" type="video/webm">
+                                            <source src="assets/video/Starfield.mp4" type="video/mp4">
                                         </video>
                                     </div>
                                     <ul class="experience-bullets">
@@ -728,7 +744,7 @@
                                 <div class="entry-content">
                                     <div class="experience-video-background">
                                         <video autoplay muted loop playsinline>
-                                            <source src="assets/video/Starfield_optimized.webm" type="video/webm">
+                                            <source src="assets/video/Starfield.mp4" type="video/mp4">
                                         </video>
                                     </div>
                                     <ul class="experience-bullets">
@@ -754,7 +770,7 @@
                                 <div class="entry-content">
                                     <div class="experience-video-background">
                                         <video autoplay muted loop playsinline>
-                                            <source src="assets/video/Starfield_optimized.webm" type="video/webm">
+                                            <source src="assets/video/Starfield.mp4" type="video/mp4">
                                         </video>
                                     </div>
                                     <ul class="experience-bullets">
@@ -780,7 +796,7 @@
                                 <div class="entry-content">
                                     <div class="experience-video-background">
                                         <video autoplay muted loop playsinline>
-                                            <source src="assets/video/Starfield_optimized.webm" type="video/webm">
+                                            <source src="assets/video/Starfield.mp4" type="video/mp4">
                                         </video>
                                     </div>
                                     <ul class="experience-bullets">
@@ -820,7 +836,7 @@
                                 <div class="entry-content">
                                     <div class="experience-video-background">
                                         <video autoplay muted loop playsinline>
-                                            <source src="assets/video/Starfield_optimized.webm" type="video/webm">
+                                            <source src="assets/video/Starfield.mp4" type="video/mp4">
                                         </video>
                                     </div>
                                     <ul class="experience-bullets">
@@ -851,7 +867,7 @@
                                 <div class="entry-content">
                                     <div class="experience-video-background">
                                         <video autoplay muted loop playsinline>
-                                            <source src="assets/video/Starfield_optimized.webm" type="video/webm">
+                                            <source src="assets/video/Starfield.mp4" type="video/mp4">
                                         </video>
                                     </div>
                                     <ul class="experience-bullets">
@@ -881,7 +897,7 @@
                                 <div class="entry-content">
                                     <div class="experience-video-background">
                                         <video autoplay muted loop playsinline>
-                                            <source src="assets/video/Starfield_optimized.webm" type="video/webm">
+                                            <source src="assets/video/Starfield.mp4" type="video/mp4">
                                         </video>
                                     </div>
                                     <ul class="experience-bullets">
@@ -911,7 +927,7 @@
                                 <div class="entry-content">
                                     <div class="experience-video-background">
                                         <video autoplay muted loop playsinline>
-                                            <source src="assets/video/Starfield_optimized.webm" type="video/webm">
+                                            <source src="assets/video/Starfield.mp4" type="video/mp4">
                                         </video>
                                     </div>
                                     <ul class="experience-bullets">
