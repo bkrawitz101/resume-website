@@ -40,53 +40,6 @@ function initLazyLoading() {
     }
 }
 
-// Global function to start background audio
-function startBackgroundAudioGlobal() {
-    console.log('🎵 Global: Attempting to start background audio...');
-    const backgroundAudio = document.getElementById('backgroundAudio');
-    const audioBtn = document.getElementById('playAudioBtn');
-    
-    console.log('🎵 Global: Background audio element:', backgroundAudio);
-    console.log('🎵 Global: Audio button element:', audioBtn);
-    console.log('🎵 Global: Audio paused state:', backgroundAudio ? backgroundAudio.paused : 'no audio element');
-    console.log('🎵 Global: Audio readyState:', backgroundAudio ? backgroundAudio.readyState : 'no audio element');
-    
-    if (backgroundAudio && audioBtn) {
-        backgroundAudio.volume = 0.3;
-        backgroundAudio.loop = true;
-        
-        // Check if audio is already playing
-        if (!backgroundAudio.paused) {
-            console.log('🎵 Global: Audio is already playing');
-            return;
-        }
-        
-        // Try to play audio
-        const playPromise = backgroundAudio.play();
-        
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
-                console.log('🎵 Global: Background audio started successfully');
-                // Update audio button to show playing state
-                audioBtn.innerHTML = '<i class="fas fa-volume-up"></i><span>Audio On</span>';
-                audioBtn.classList.add('playing');
-                console.log('🎵 Global: Audio button updated to playing state');
-            }).catch(function(error) {
-                console.log('🎵 Global: Background audio failed to start:', error);
-                console.log('🎵 Global: Error details:', error.name, error.message);
-                // Show button in muted state if audio fails
-                audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i><span>Enable Audio</span>';
-                audioBtn.classList.remove('playing');
-                console.log('🎵 Global: Audio button updated to muted state');
-            });
-        } else {
-            console.log('🎵 Global: Play promise is undefined - audio may not be ready');
-        }
-    } else {
-        console.log('🎵 Global: Missing audio element or button');
-    }
-}
-
 // Background audio functionality
 function initBackgroundAudio() {
     const backgroundAudio = document.getElementById('backgroundAudio');
@@ -94,48 +47,34 @@ function initBackgroundAudio() {
     
     if (backgroundAudio && audioBtn) {
         // Set volume to a subtle level
-        backgroundAudio.volume = 0.3;
-        
+        backgroundAudio.volume = 0.3; 
         // Ensure audio loops
         backgroundAudio.loop = true;
         
         // Audio control button functionality
         audioBtn.addEventListener('click', function() {
             console.log('🎵 Audio button clicked');
-            console.log('🎵 Audio paused state:', backgroundAudio.paused);
-            console.log('🎵 Audio readyState:', backgroundAudio.readyState);
-            
             if (backgroundAudio.paused) {
-                console.log('🎵 Attempting to play audio...');
-                // Start playing
                 backgroundAudio.play().then(() => {
-                    console.log('🎵 Audio play successful');
                     audioBtn.innerHTML = '<i class="fas fa-volume-up"></i><span>Audio On</span>';
                     audioBtn.classList.add('playing');
                     console.log('🎵 Background audio started successfully');
                 }).catch(function(error) {
-                    console.log('🎵 Background audio play failed:', error.name, error.message);
+                    console.error('🎵 Background audio play failed:', error);
                     audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i><span>Enable Audio</span>';
                     audioBtn.classList.remove('playing');
                 });
             } else {
-                console.log('🎵 Pausing audio...');
-                // Pause playing
                 backgroundAudio.pause();
                 audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i><span>Audio Off</span>';
                 audioBtn.classList.remove('playing');
                 console.log('🔇 Background audio paused');
             }
         });
-        
-        // Don't try to autoplay audio - wait for explicit user interaction
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🎵 Background audio ready, waiting for user interaction');
-            // Ensure button shows muted state initially
-                    audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i><span>Enable Audio</span>';
-            audioBtn.classList.remove('playing');
-        });
-        
+
+        // Ensure button shows muted state initially
+        audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i><span>Enable Audio</span>';
+        audioBtn.classList.remove('playing');
         console.log('🎵 Background audio initialized');
     }
 }
@@ -143,20 +82,11 @@ function initBackgroundAudio() {
 // Video intro functionality
 function initVideoIntro() {
     const videoIntro = document.getElementById('videoIntro');
-    const introVideo = document.getElementById('introVideo');
-    const backgroundAudio = document.getElementById('backgroundAudio');
     const loadingProgress = document.querySelector('.loading-progress');
     
     if (videoIntro && introVideo) {
         let videoDuration = 0;
         let currentTime = 0;
-        
-        // Prepare audio but don't autoplay - wait for user interaction
-        if (backgroundAudio) {
-            backgroundAudio.volume = 0.3;
-            backgroundAudio.loop = true;
-            console.log('🎵 Background audio ready, waiting for user interaction');
-        }
         
         // Get video duration when metadata is loaded
         introVideo.addEventListener('loadedmetadata', function() {
@@ -214,86 +144,10 @@ function initVideoIntro() {
             console.log('🎬 Video waiting on mobile');
         });
         
-        // Start background audio when video starts
-        introVideo.addEventListener('play', function() {
-            console.log('🎬 Video started, attempting to start audio');
-            startAudioOnInteraction();
-        });
-        
-        // Also try to start audio when video can play
-        introVideo.addEventListener('canplay', function() {
-            console.log('🎬 Video can play, attempting to start audio');
-            startAudioOnInteraction();
-        });
-        
         // Debug video loading
         introVideo.addEventListener('loadstart', function() {
             console.log('🎬 Video load started');
         });
-        
-        introVideo.addEventListener('loadedmetadata', function() {
-            console.log('🎬 Video metadata loaded');
-        });
-        
-        // Function to start background audio (local to this function)
-        function startBackgroundAudio() {
-            console.log('🎵 Attempting to start background audio...');
-            console.log('🎵 Background audio element:', backgroundAudio);
-            console.log('🎵 Audio paused state:', backgroundAudio ? backgroundAudio.paused : 'no audio element');
-            console.log('🎵 Audio readyState:', backgroundAudio ? backgroundAudio.readyState : 'no audio element');
-            
-            if (backgroundAudio) {
-                backgroundAudio.volume = 0.3;
-                backgroundAudio.loop = true;
-                
-                // Check if audio is already playing
-                if (!backgroundAudio.paused) {
-                    console.log('🎵 Audio is already playing');
-                    return;
-                }
-                
-                // Check if audio is ready
-                if (backgroundAudio.readyState < 2) {
-                    console.log('🎵 Audio not ready yet, waiting...');
-                    backgroundAudio.addEventListener('canplay', function() {
-                        console.log('🎵 Audio is now ready, attempting to play');
-                        startBackgroundAudio();
-                    }, { once: true });
-                    return;
-                }
-                
-                // Try to play audio
-                const playPromise = backgroundAudio.play();
-                
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        console.log('🎵 Background audio started successfully');
-                        // Update audio button to show playing state
-                        const audioBtn = document.getElementById('playAudioBtn');
-                        if (audioBtn) {
-                            audioBtn.innerHTML = '<i class="fas fa-volume-up"></i><span>Audio On</span>';
-                            audioBtn.classList.add('playing');
-                        }
-                    }).catch(function(error) {
-                        console.log('🎵 Background audio failed to start:', error);
-                        console.log('🎵 Error details:', error.name, error.message);
-                        // Show button in muted state if audio fails
-                        const audioBtn = document.getElementById('playAudioBtn');
-                        if (audioBtn) {
-                            audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i><span>Enable Audio</span>';
-                            audioBtn.classList.remove('playing');
-                        }
-                    });
-                } else {
-                    console.log('🎵 Play promise is undefined - audio may not be ready');
-                }
-            } else {
-                console.log('🎵 No background audio element found');
-            }
-        }
-        
-        // Don't autoplay audio on any user interaction - wait for explicit button click
-        console.log('🎬 Video intro ready, audio will only start on button click');
         
         console.log('🎬 Video intro initialized');
     }
@@ -318,71 +172,6 @@ function transitionToMainSite() {
         }, 2000); // Match the CSS transition duration
     }
 }
-
-// Initialize video intro
-initVideoIntro();
-
-// Initialize background audio
-initBackgroundAudio();
-
-// Test audio loading and try to start immediately
-function testAudioElement() {
-    console.log('🎵 Testing audio element...');
-    const backgroundAudio = document.getElementById('backgroundAudio');
-    if (backgroundAudio) {
-        console.log('🎵 Audio element found');
-        console.log('🎵 Audio readyState:', backgroundAudio.readyState);
-        console.log('🎵 Audio networkState:', backgroundAudio.networkState);
-        console.log('🎵 Audio paused:', backgroundAudio.paused);
-        console.log('🎵 Audio src:', backgroundAudio.src);
-        console.log('🎵 Audio duration:', backgroundAudio.duration);
-        console.log('🎵 Audio currentTime:', backgroundAudio.currentTime);
-        
-        // Add event listeners to debug audio loading
-        backgroundAudio.addEventListener('loadstart', function() {
-            console.log('🎵 Audio load started');
-        });
-        
-        backgroundAudio.addEventListener('loadedmetadata', function() {
-            console.log('🎵 Audio metadata loaded');
-        });
-        
-        backgroundAudio.addEventListener('canplay', function() {
-            console.log('🎵 Audio can play');
-        });
-        
-        backgroundAudio.addEventListener('play', function() {
-            console.log('🎵 Audio started playing');
-        });
-        
-        backgroundAudio.addEventListener('error', function(e) {
-            console.log('🎵 Audio error:', e);
-        });
-        
-        // Set audio properties
-        backgroundAudio.volume = 0.3;
-        backgroundAudio.loop = true;
-        
-        // Don't autoplay - wait for user to click the button
-        console.log('🎵 Audio ready, waiting for user to click Enable Audio button');
-        
-        // Ensure button shows muted state
-                const audioBtn = document.getElementById('playAudioBtn');
-                if (audioBtn) {
-            audioBtn.innerHTML = '<i class="fas fa-volume-up"></i><span>Enable Audio</span>';
-                    audioBtn.classList.remove('playing');
-        }
-    } else {
-        console.log('🎵 No audio element found!');
-    }
-}
-
-// Call the function after a delay
-window.addEventListener('load', function() {
-    setTimeout(function() {
-        testAudioElement();
-    }, 2000);
-});
 
 // Initiate Sequence functionality
 function initInitiateSequence() {
@@ -414,12 +203,20 @@ function initInitiateSequence() {
                 const sequenceText = flashingBox.querySelector('.sequence-text');
                 if (sequenceText) {
                     sequenceText.textContent = 'System Activated';
-                    sequenceText.style.color = '#ff0000';
-                    sequenceText.style.textShadow = '0 0 20px #ff0000, 0 0 40px #ff0000, 0 0 60px #ff0000';
                 }
                 
-                // Add flashing animation to the button
-                flashingBox.style.animation = 'flash-red 0.5s ease-in-out infinite';
+                // Add 'activated' class to apply styles from CSS
+                flashingBox.classList.add('activated');
+
+                // --- KEY CHANGE: Attempt to play audio on the first user click ---
+                if (backgroundAudio && backgroundAudio.paused) {
+                    backgroundAudio.play().then(() => {
+                        if (audioBtn) {
+                            audioBtn.innerHTML = '<i class="fas fa-volume-up"></i><span>Audio On</span>';
+                            audioBtn.classList.add('playing');
+                        }
+                    }).catch(error => console.error('🎵 Audio failed to play on initial click:', error));
+                }
                 
                 // Voice announcement
                 if ('speechSynthesis' in window) {
@@ -442,18 +239,15 @@ function initInitiateSequence() {
                     
                     speechUtterance.onstart = () => {
                         speechStartTime = Date.now();
-                        console.log('🌿 Voice announcement started');
                     };
                     
                     speechUtterance.onend = () => {
                         speechDuration = Date.now() - speechStartTime;
-                        console.log('🌿 Voice announcement ended, duration:', speechDuration + 'ms');
                         
                         // Stop the blinking animation
-                        flashingBox.style.animation = 'none';
+                        flashingBox.classList.remove('activated');
                         
                         // Hide the initiate sequence immediately
-                        initiateSequence.style.opacity = '0';
                         initiateSequence.style.display = 'none';
                         
                         // Start video immediately after voice ends
@@ -465,12 +259,9 @@ function initInitiateSequence() {
                 } else {
                     // Fallback if speech synthesis not available
                     setTimeout(() => {
-                        // Stop the blinking animation
-                        flashingBox.style.animation = 'none';
-                
-                // Hide the initiate sequence
-                initiateSequence.style.opacity = '0';
-                    initiateSequence.style.display = 'none';
+                        // Stop the blinking animation and hide the sequence
+                        flashingBox.classList.remove('activated');
+                        initiateSequence.style.display = 'none';
                         
                         startVideoSequence();
                     }, 3000); // 3 second fallback
@@ -480,7 +271,7 @@ function initInitiateSequence() {
     }
 }
 
-// Start video sequence after supernova completes
+// Start video sequence
 function startVideoSequence() {
     const videoIntro = document.getElementById('videoIntro');
     const introVideo = document.getElementById('introVideo');
@@ -521,17 +312,6 @@ function startVideoSequence() {
                     
                     introVideo.play().then(() => {
                         console.log('🎬 Video started');
-                        
-                        // Don't autoplay audio - wait for user to click the button
-                        console.log('🎵 Video started, audio will only start on button click');
-            
-            // Clean up supernova explosion container after video starts
-            setTimeout(() => {
-                if (window.supernovaExplosionContainer && window.supernovaExplosionContainer.parentNode) {
-                    window.supernovaExplosionContainer.parentNode.removeChild(window.supernovaExplosionContainer);
-                    window.supernovaExplosionContainer = null;
-                }
-            }, 500);
             
                     }).catch((error) => {
                         console.log('🎬 Video failed to start:', error);
@@ -557,317 +337,6 @@ function startVideoSequence() {
             }
         }, 500);
     }
-}
-
-// Create supernova explosion effect
-function createSupernovaEffect(centerX, centerY) {
-    // Create explosion container with full black background
-    const explosionContainer = document.createElement('div');
-    explosionContainer.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: 10001;
-        background: #000000;
-    `;
-    document.body.appendChild(explosionContainer);
-    
-    // Create realistic supernova core
-    const supernovaCore = document.createElement('div');
-    supernovaCore.style.cssText = `
-        position: absolute;
-        left: ${centerX}px;
-        top: ${centerY}px;
-        width: 0;
-        height: 0;
-        background: radial-gradient(circle, 
-            rgba(255, 255, 255, 1) 0%,
-            rgba(255, 255, 255, 0.9) 5%,
-            rgba(255, 255, 255, 0.7) 15%,
-            rgba(255, 255, 255, 0.4) 30%,
-            rgba(255, 255, 255, 0.2) 50%,
-            transparent 70%);
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 10002;
-        transform: translate(-50%, -50%);
-        animation: supernovaCore 0.5s ease-out forwards;
-    `;
-    explosionContainer.appendChild(supernovaCore);
-    
-    // Create intense initial flash
-    const initialFlash = document.createElement('div');
-    initialFlash.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: radial-gradient(circle at ${centerX}px ${centerY}px, 
-            rgba(255, 255, 255, 1) 0%, 
-            rgba(255, 255, 255, 0.95) 5%, 
-            rgba(255, 255, 255, 0.8) 15%, 
-            rgba(255, 255, 255, 0.5) 30%, 
-            rgba(255, 255, 255, 0.2) 50%, 
-            transparent 80%);
-        z-index: 10003;
-        opacity: 0;
-        animation: initialFlash 0.3s ease-out forwards;
-    `;
-    document.body.appendChild(initialFlash);
-    
-    // Create multiple particle systems for realistic explosion
-    const particleSystems = [
-        { count: 120, colors: ['hsl(15, 100%, 70%)', 'hsl(45, 100%, 70%)', 'hsl(60, 100%, 70%)'], size: [2, 8], speed: [0.6, 1.2] }, // Core particles
-        { count: 80, colors: ['hsl(30, 100%, 80%)', 'hsl(50, 100%, 80%)', 'hsl(0, 100%, 80%)'], size: [1, 4], speed: [0.8, 1.5] }, // Secondary particles
-        { count: 60, colors: ['hsl(20, 100%, 60%)', 'hsl(40, 100%, 60%)'], size: [3, 6], speed: [1.0, 1.8] } // High-speed particles
-    ];
-    
-    particleSystems.forEach((system, systemIndex) => {
-        for (let i = 0; i < system.count; i++) {
-            const particle = document.createElement('div');
-            const angle = (Math.PI * 2 * i) / system.count + (Math.random() - 0.5) * 0.5;
-            const distance = 100 + Math.random() * 300;
-            const size = system.size[0] + Math.random() * (system.size[1] - system.size[0]);
-            const speed = system.speed[0] + Math.random() * (system.speed[1] - system.speed[0]);
-            const delay = Math.random() * 0.4;
-            const color = system.colors[Math.floor(Math.random() * system.colors.length)];
-            
-            particle.style.cssText = `
-                position: absolute;
-                left: ${centerX}px;
-                top: ${centerY}px;
-                width: ${size}px;
-                height: ${size}px;
-                background: ${color};
-                border-radius: 50%;
-                box-shadow: 0 0 ${size * 4}px ${color}, 0 0 ${size * 8}px ${color};
-                pointer-events: none;
-                z-index: ${10004 + systemIndex};
-                transform: translate(-50%, -50%);
-                animation: realisticSupernovaExplosion 2.5s ease-out ${delay}s forwards;
-            `;
-            
-            particle.style.setProperty('--angle', angle + 'rad');
-            particle.style.setProperty('--distance', distance + 'px');
-            particle.style.setProperty('--speed', speed);
-            
-            explosionContainer.appendChild(particle);
-        }
-    });
-    
-    // Create multiple shockwave rings with different properties
-    const shockwaveRings = [
-        { size: 600, duration: 1.2, opacity: 0.9, color: 'rgba(255, 255, 255, 0.9)' },
-        { size: 800, duration: 1.5, opacity: 0.7, color: 'rgba(255, 255, 255, 0.7)' },
-        { size: 1000, duration: 1.8, opacity: 0.5, color: 'rgba(255, 255, 255, 0.5)' },
-        { size: 1200, duration: 2.1, opacity: 0.3, color: 'rgba(255, 255, 255, 0.3)' }
-    ];
-    
-    shockwaveRings.forEach((ring, index) => {
-        const shockwave = document.createElement('div');
-        shockwave.style.cssText = `
-            position: absolute;
-            left: ${centerX}px;
-            top: ${centerY}px;
-            width: 0;
-            height: 0;
-            border: 2px solid ${ring.color};
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 10008;
-            transform: translate(-50%, -50%);
-            animation: realisticShockwaveRing ${ring.duration}s ease-out ${index * 0.1}s forwards;
-        `;
-        
-        shockwave.style.setProperty('--max-size', ring.size + 'px');
-        shockwave.style.setProperty('--opacity', ring.opacity);
-        
-        explosionContainer.appendChild(shockwave);
-    });
-    
-    // Create energy waves with different colors
-    const energyWaves = [
-        { color: 'rgba(255, 165, 0, 0.8)', size: 500, duration: 1.0 },
-        { color: 'rgba(255, 255, 0, 0.6)', size: 700, duration: 1.3 },
-        { color: 'rgba(255, 200, 0, 0.7)', size: 900, duration: 1.6 }
-    ];
-    
-    energyWaves.forEach((wave, index) => {
-        const energyWave = document.createElement('div');
-        energyWave.style.cssText = `
-            position: absolute;
-            left: ${centerX}px;
-            top: ${centerY}px;
-            width: 0;
-            height: 0;
-            border: 3px solid ${wave.color};
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 10009;
-            transform: translate(-50%, -50%);
-            animation: realisticEnergyWave ${wave.duration}s ease-out ${index * 0.2}s forwards;
-        `;
-        
-        energyWave.style.setProperty('--max-size', wave.size + 'px');
-        
-        explosionContainer.appendChild(energyWave);
-    });
-    
-    // Create debris field
-    for (let i = 0; i < 40; i++) {
-        const debris = document.createElement('div');
-        const angle = (Math.PI * 2 * i) / 40;
-        const distance = 200 + Math.random() * 400;
-        const size = 1 + Math.random() * 3;
-        const delay = 0.2 + Math.random() * 0.5;
-        
-        debris.style.cssText = `
-            position: absolute;
-            left: ${centerX}px;
-            top: ${centerY}px;
-            width: ${size}px;
-            height: ${size}px;
-            background: rgba(255, 255, 255, 0.6);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 10010;
-            transform: translate(-50%, -50%);
-            animation: debrisField 3s ease-out ${delay}s forwards;
-        `;
-        
-        debris.style.setProperty('--angle', angle + 'rad');
-        debris.style.setProperty('--distance', distance + 'px');
-        
-        explosionContainer.appendChild(debris);
-    }
-    
-    // Clean up flash overlay
-    setTimeout(() => {
-        if (initialFlash.parentNode) {
-            initialFlash.parentNode.removeChild(initialFlash);
-        }
-    }, 300);
-    
-    // Clean up explosion elements but keep black background
-    setTimeout(() => {
-        if (supernovaCore.parentNode) {
-            supernovaCore.parentNode.removeChild(supernovaCore);
-        }
-        // Keep explosionContainer for black background until video starts
-    }, 3000);
-    
-    // Add enhanced CSS animations
-    if (!document.getElementById('realistic-supernova-animations')) {
-        const style = document.createElement('style');
-        style.id = 'realistic-supernova-animations';
-        style.textContent = `
-            @keyframes supernovaCore {
-                0% {
-                    width: 0;
-                    height: 0;
-                    opacity: 0;
-                }
-                50% {
-                    width: 200px;
-                    height: 200px;
-                    opacity: 1;
-                }
-                100% {
-                    width: 400px;
-                    height: 400px;
-                    opacity: 0;
-                }
-            }
-            
-            @keyframes initialFlash {
-                0% {
-                    opacity: 0;
-                }
-                50% {
-                    opacity: 1;
-                }
-                100% {
-                    opacity: 0;
-                }
-            }
-            
-            @keyframes realisticSupernovaExplosion {
-                0% {
-                    transform: translate(-50%, -50%) scale(0);
-                    opacity: 1;
-                }
-                10% {
-                    opacity: 1;
-                }
-                100% {
-                    transform: translate(-50%, -50%) scale(1) translate(
-                        calc(cos(var(--angle)) * var(--distance)),
-                        calc(sin(var(--angle)) * var(--distance))
-                    );
-                    opacity: 0;
-                }
-            }
-            
-            @keyframes realisticShockwaveRing {
-                0% {
-                    width: 0;
-                    height: 0;
-                    opacity: var(--opacity);
-                    border-width: 3px;
-                }
-                50% {
-                    opacity: calc(var(--opacity) * 0.8);
-                }
-                100% {
-                    width: var(--max-size);
-                    height: var(--max-size);
-                    opacity: 0;
-                    border-width: 1px;
-                }
-            }
-            
-            @keyframes realisticEnergyWave {
-                0% {
-                    width: 0;
-                    height: 0;
-                    opacity: 1;
-                }
-                50% {
-                    opacity: 0.8;
-                }
-                100% {
-                    width: var(--max-size);
-                    height: var(--max-size);
-                    opacity: 0;
-                }
-            }
-            
-            @keyframes debrisField {
-                0% {
-                    transform: translate(-50%, -50%) scale(0);
-                    opacity: 1;
-                }
-                20% {
-                    opacity: 1;
-                }
-                100% {
-                    transform: translate(-50%, -50%) scale(1) translate(
-                        calc(cos(var(--angle)) * var(--distance)),
-                        calc(sin(var(--angle)) * var(--distance))
-                    );
-                    opacity: 0;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-    
-    // Store reference for cleanup
-    window.supernovaExplosionContainer = explosionContainer;
 }
 
 // Transition to main site (only called after video ends)
@@ -906,64 +375,35 @@ function startAudioOnInteraction() {
     }
 }
 
-// Initialize initiate sequence
+// --- Global State and Cached Elements ---
+const AppState = {
+    contentSections: null,
+    navTabs: null
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 DOM Content Loaded - Starting initialization');
+
+    // Cache DOM elements
+    AppState.contentSections = document.querySelectorAll('.content-section');
+    AppState.navTabs = document.querySelectorAll('.nav-tab');
+
+    // Initialize all modules
+    initVideoIntro();
+    initBackgroundAudio();
     initInitiateSequence();
     initLazyLoading();
+    initNavigation();
+    initInteractiveEffects();
+    initClickableEntries();
+    initMobileNavigation();
+    listAvailableVoices();
 });
 
-// Don't autoplay audio on user interactions - wait for explicit button click
-console.log('🎵 Audio will only start when user clicks the Enable Audio button');
-
-// Global function to show section - accessible from anywhere
-function showSection(sectionId) {
-    console.log('🔄 showSection called with:', sectionId);
-    
-    // Find elements fresh each time to avoid scope issues
-    const contentSections = document.querySelectorAll('.content-section');
-    const navTabs = document.querySelectorAll('.nav-tab');
-
-    console.log('🔄 Found content sections:', contentSections.length);
-    console.log('🔄 Found nav tabs:', navTabs.length);
-    
-        // Hide all sections
-        contentSections.forEach(section => {
-            section.classList.remove('active');
-        console.log('🔄 Removed active from section:', section.id);
-        });
-
-        // Remove active class from all nav tabs
-        navTabs.forEach(tab => {
-            tab.classList.remove('active');
-        });
-
-        // Show target section
-        const targetSection = document.getElementById(sectionId);
-        if (targetSection) {
-            targetSection.classList.add('active');
-        console.log('🔄 Added active to section:', sectionId);
-    } else {
-        console.error('❌ Section not found:', sectionId);
-        }
-
-        // Add active class to clicked nav tab
-        const activeTab = document.querySelector(`[data-section="${sectionId}"]`);
-        if (activeTab) {
-            activeTab.classList.add('active');
-        console.log('🔄 Added active to nav tab:', sectionId);
-    } else {
-        console.log('⚠️ Nav tab not found for section:', sectionId);
-        }
-    }
-
-// Navigation functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const navTabs = document.querySelectorAll('.nav-tab');
-    const contentSections = document.querySelectorAll('.content-section');
-
-    // Add click event listeners to nav tabs
-    navTabs.forEach(tab => {
+// --- Navigation ---
+function initNavigation() {
+    // Add click event listeners to nav tabs using cached elements
+    AppState.navTabs.forEach(tab => {
         tab.addEventListener('click', function(e) {
             e.preventDefault();
             const sectionId = this.getAttribute('data-section');
@@ -971,7 +411,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Add smooth scrolling for anchor links
+    // Handle anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
@@ -980,26 +420,44 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Simple project link handling - just let links work naturally
-    document.querySelectorAll('.project-link').forEach(link => {
-        link.addEventListener('click', function(e) {
-            // Let the link work normally - no interference
-            console.log('Link clicked:', this.href);
-        });
-    });
-
     // Initialize with About section
     showSection('about');
-    
-    // Update data-section attributes for portfolio
-    const portfolioTab = document.querySelector('[data-section="portfolio"]');
-    if (portfolioTab) {
-        portfolioTab.setAttribute('data-section', 'portfolio');
-    }
-});
+}
 
-// Enhanced interactive effects
-document.addEventListener('DOMContentLoaded', function() {
+// Global function to show section - accessible from anywhere
+function showSection(sectionId) {
+    console.log('🔄 showSection called with:', sectionId);
+    
+    // Use cached elements from AppState
+    AppState.contentSections.forEach(section => {
+        section.classList.remove('active');
+    });
+
+    AppState.navTabs.forEach(tab => {
+        tab.classList.remove('active');
+    });
+
+    // Show target section
+    const targetSection = document.getElementById(sectionId);
+    if (targetSection) {
+        targetSection.classList.add('active');
+        console.log('🔄 Added active to section:', sectionId);
+    } else {
+        console.error('❌ Section not found:', sectionId);
+    }
+
+    // Add active class to clicked nav tab
+    const activeTab = document.querySelector(`.nav-tab[data-section="${sectionId}"]`);
+    if (activeTab) {
+        activeTab.classList.add('active');
+        console.log('🔄 Added active to nav tab:', sectionId);
+    } else {
+        console.log('⚠️ Nav tab not found for section:', sectionId);
+    }
+}
+
+// --- Enhanced Interactive Effects ---
+function initInteractiveEffects() {
     // Add hover effects to cards
     const cards = document.querySelectorAll('.experience-card, .project-card, .education-card, .contact-card');
     
@@ -1059,7 +517,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Add keyboard navigation
     document.addEventListener('keydown', function(e) {
-        const activeTab = document.querySelector('.nav-tab.active');
+        const activeTab = document.querySelector('.nav-tab.active'); // This can stay as it changes
         const tabs = Array.from(document.querySelectorAll('.nav-tab'));
         const currentIndex = tabs.indexOf(activeTab);
         
@@ -1226,7 +684,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.removeChild(input);
         });
     });
-});
+}
 
 // Smooth scrolling utility
 const smoothScroll = (target) => {
@@ -1275,18 +733,6 @@ function listAvailableVoices() {
     }
     return [];
 }
-
-// Initialize when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    // List available voices
-    listAvailableVoices();
-    
-    // Initialize clickable entries with typing effect
-    initClickableEntries();
-    
-    // Initialize mobile navigation
-    initMobileNavigation();
-});
 
 // Clickable Entries with Typing Effect
 // Global variables for speech control

@@ -1109,7 +1109,8 @@ body {
     animation: dendrite-pulse 3s infinite;
 }
 
-.neural .nav-tab:hover {
+.neural .nav-tab:hover,
+.neural .nav-tab.active:hover {
     transform: scale(1.8);
     width: 144px;
     height: 144px;
@@ -1122,13 +1123,15 @@ body {
     position: relative;
 }
 
-.neural .nav-tab:hover i {
+.neural .nav-tab:hover i,
+.neural .nav-tab.active:hover i {
     opacity: 0;
     transform: scale(0.3);
     transition: all 0.3s ease;
 }
 
-.neural .nav-tab:hover .nav-label {
+.neural .nav-tab:hover .nav-label,
+.neural .nav-tab.active:hover .nav-label {
     opacity: 1;
     visibility: visible;
     position: absolute;
@@ -1157,7 +1160,8 @@ body {
 }
 
 /* Special sizing for longer text like "Mission" */
-.neural .nav-tab[data-section="about"]:hover .nav-label {
+.neural .nav-tab[data-section="about"]:hover .nav-label,
+.neural .nav-tab.active[data-section="about"]:hover .nav-label {
     font-size: 1.1rem;
     line-height: 1.1;
     padding: 1rem;
@@ -1171,12 +1175,14 @@ body {
     text-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
 }
 
-.neural .nav-tab:hover::before {
+.neural .nav-tab:hover::before,
+.neural .nav-tab.active:hover::before {
     animation: neuron-pulse 0.5s infinite;
     box-shadow: 0 0 25px rgba(0, 212, 255, 1);
 }
 
-.neural .nav-tab:hover::after {
+.neural .nav-tab:hover::after,
+.neural .nav-tab.active:hover::after {
     animation: neural-pulse 1s infinite;
 }
 
@@ -1921,7 +1927,8 @@ body {
     position: relative;
 }
 
-.project-category.clickable-entry {
+.project-category.clickable-entry,
+.education-showcase.clickable-entry {
     background: rgba(0, 212, 255, 0.05);
     border: 2px solid rgba(0, 212, 255, 0.2);
     border-radius: 10px;
@@ -1932,18 +1939,21 @@ body {
     overflow: hidden;
 }
 
-.project-category.clickable-entry:hover {
+.project-category.clickable-entry:hover,
+.education-showcase.clickable-entry:hover {
     border-color: rgba(0, 212, 255, 0.6);
     box-shadow: 0 12px 40px rgba(0, 212, 255, 0.2);
     transform: translateY(-2px);
 }
 
-.project-category.clickable-entry.expanded {
+.project-category.clickable-entry.expanded,
+.education-showcase.clickable-entry.expanded {
     border-color: rgba(0, 212, 255, 0.8);
     box-shadow: 0 15px 50px rgba(0, 212, 255, 0.3);
 }
 
-.project-category .entry-header {
+.project-category .entry-header,
+.education-showcase .entry-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1953,13 +1963,15 @@ body {
     transition: all 0.3s ease;
 }
 
-.project-category .entry-content {
+.project-category .entry-content,
+.education-showcase .entry-content {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.5s ease;
 }
 
-.project-category.clickable-entry.expanded .entry-content {
+.project-category.clickable-entry.expanded .entry-content,
+.education-showcase.clickable-entry.expanded .entry-content {
     max-height: none;
     overflow: visible;
     padding: 1rem 1.5rem;
@@ -1976,7 +1988,8 @@ body {
     grid: none !important;
 }
 
-.project-card {
+.project-card,
+.education-card {
     background: rgba(0, 0, 0, 0.7);
     border: 2px solid rgba(0, 212, 255, 0.4);
     border-radius: 8px;
@@ -1999,7 +2012,8 @@ body {
 
 
 
-.project-card::before {
+.project-card::before,
+.education-card::before {
     content: '';
     position: absolute;
     top: 0;
@@ -2011,11 +2025,13 @@ body {
     transition: opacity 0.4s ease;
 }
 
-.project-card:hover::before {
+.project-card:hover::before,
+.education-card:hover::before {
     opacity: 1;
 }
 
-.project-card:hover {
+.project-card:hover,
+.education-card:hover {
     background: rgba(0, 212, 255, 0.1);
     border-color: rgba(0, 212, 255, 0.8);
     transform: translateY(-5px);
@@ -2134,76 +2150,10 @@ body {
     grid: none !important;
 }
 
-.education-showcase.clickable-entry {
-    background: rgba(255, 215, 0, 0.05);
-    border: 2px solid rgba(255, 215, 0, 0.2);
-    border-radius: 10px;
-    padding: 0;
-    margin-bottom: 1rem;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.education-showcase.clickable-entry:hover {
-    border-color: rgba(255, 215, 0, 0.6);
-    box-shadow: 0 12px 40px rgba(255, 215, 0, 0.2);
-    transform: translateY(-2px);
-}
-
-.education-showcase.clickable-entry.expanded {
-    border-color: rgba(255, 215, 0, 0.8);
-    box-shadow: 0 15px 50px rgba(255, 215, 0, 0.3);
-}
-
-.education-showcase .entry-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    background: rgba(255, 215, 0, 0.1);
-    border-bottom: 1px solid rgba(255, 215, 0, 0.2);
-    transition: all 0.3s ease;
-}
-
-.education-showcase .entry-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.5s ease;
-}
-
-.education-showcase.clickable-entry.expanded .entry-content {
-    max-height: none;
-    overflow: visible;
-    padding: 1rem 1.5rem;
-    position: relative;
-}
-
-.education-card {
-    background: rgba(139, 69, 19, 0.15);
-    border: 2px solid rgba(255, 215, 0, 0.4);
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 0.5rem;
-    transition: all 0.4s ease;
-    backdrop-filter: blur(15px);
-    width: 100% !important;
-    max-width: 100% !important;
-    flex: 1 1 100% !important;
-    grid-column: 1 / -1 !important;
-}
-
 .education-card.featured {
     background: rgba(255, 215, 0, 0.1);
     border-color: rgba(255, 215, 0, 0.6);
     box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
-}
-
-.education-card:hover {
-    background: rgba(255, 215, 0, 0.1);
-    border-color: rgba(255, 215, 0, 0.8);
-    transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(255, 215, 0, 0.3);
 }
 
 .education-header {
@@ -3173,6 +3123,15 @@ body {
         background: rgba(255, 0, 0, 0.8);
         box-shadow: 0 0 50px rgba(255, 0, 0, 1);
     }
+}
+
+/* Style for the activated sequence button */
+.flashing-box.activated {
+    animation: flash-red 0.5s ease-in-out infinite;
+}
+.flashing-box.activated .sequence-text {
+    color: #ff0000;
+    text-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000, 0 0 60px #ff0000;
 }
 
 /* Video Intro Styles */
