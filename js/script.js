@@ -210,12 +210,20 @@ function initInitiateSequence() {
 
                 // --- KEY CHANGE: Attempt to play audio on the first user click ---
                 if (backgroundAudio && backgroundAudio.paused) {
+                    backgroundAudio.load(); // Explicitly load the audio before playing
                     backgroundAudio.play().then(() => {
+                        console.log('🎵 Audio playback started successfully.');
                         if (audioBtn) {
                             audioBtn.innerHTML = '<i class="fas fa-volume-up"></i><span>Audio On</span>';
                             audioBtn.classList.add('playing');
                         }
-                    }).catch(error => console.error('🎵 Audio failed to play on initial click:', error));
+                    }).catch(error => {
+                        console.error('🎵 Audio failed to play on initial click:', error);
+                        if (audioBtn) {
+                            audioBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Audio Error</span>';
+                            audioBtn.disabled = true;
+                        }
+                    });
                 }
                 
                 // Voice announcement
@@ -492,17 +500,29 @@ function initInteractiveEffects() {
         setTimeout(typeWriter, 500);
     }
 
-    // Add parallax effect to background
-    window.addEventListener('scroll', function() {
-        const scrolled = window.pageYOffset;
-        const parallax = document.querySelector('.container');
-        const speed = scrolled * 0.3;
-        
-        if (parallax) {
-            parallax.style.transform = `translateY(${speed}px)`;
+    // --- Throttled Parallax Effect ---
+    // Throttle function to limit how often a function can run. This improves performance.
+    function throttle(func, limit) {
+        let inThrottle;
+        return function() {
+            const args = arguments;
+            const context = this;
+            if (!inThrottle) {
+                func.apply(context, args);
+                inThrottle = true;
+                setTimeout(() => inThrottle = false, limit);
+            }
         }
-    });
+    }
 
+    // Add throttled parallax effect to the container
+    const parallaxElement = document.querySelector('.container');
+    if (parallaxElement) {
+        window.addEventListener('scroll', throttle(function() {
+            const scrolled = window.pageYOffset;
+            parallaxElement.style.transform = `translateY(${scrolled * 0.3}px)`;
+        }, 16)); // Throttled to run roughly once per frame (1000ms / 60fps ≈ 16ms)
+    }
     // Add enhanced glow effect to logo on hover
     const logo = document.querySelector('.logo');
     if (logo) {
