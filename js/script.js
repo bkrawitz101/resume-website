@@ -44,8 +44,8 @@ function initLazyLoading() {
 function initBackgroundAudio() {
     const backgroundAudio = document.getElementById('backgroundAudio');
     const audioBtn = document.getElementById('playAudioBtn');
-    
-<<<<<<< HEAD
+
+    // If elements missing, bail out gracefully
     if (!backgroundAudio || !audioBtn) return;
 
     // Use data-src attribute so audio doesn't download until the user opts in.
@@ -62,7 +62,6 @@ function initBackgroundAudio() {
         el._playLock = false;
         el.play = async function() {
             if (el._playLock) {
-                // Another play in progress; wait briefly and return.
                 await new Promise(r=>setTimeout(r, 100));
             }
             el._playLock = true;
@@ -71,14 +70,9 @@ function initBackgroundAudio() {
                 if (p && typeof p.then === 'function') {
                     return p.catch(async (err)=>{
                         if (err && err.name === 'AbortError') {
-                            // Retry once after a short delay
                             console.warn('safePlay: AbortError detected, retrying');
                             await new Promise(r=>setTimeout(r, 160));
-                            try {
-                                return await origPlay();
-                            } catch (e2) {
-                                throw e2;
-                            }
+                            return await origPlay();
                         }
                         throw err;
                     });
@@ -100,40 +94,13 @@ function initBackgroundAudio() {
             audioBtn.classList.remove('playing');
             audioBtn.setAttribute('aria-pressed', 'false');
         }
-=======
-    if (backgroundAudio && audioBtn) {
-        // Set volume to a subtle level
-        backgroundAudio.volume = 0.3; 
-        // Ensure audio loops
-        backgroundAudio.loop = true;
-        
-        // Audio control button functionality
-        audioBtn.addEventListener('click', function() {
-            console.log('🎵 Audio button clicked');
-            if (backgroundAudio.paused) {
-                backgroundAudio.play().then(() => {
-                    audioBtn.innerHTML = '<i class="fas fa-volume-up"></i><span>Audio On</span>';
-                    audioBtn.classList.add('playing');
-                    console.log('🎵 Background audio started successfully');
-                }).catch(function(error) {
-                    console.error('🎵 Background audio play failed:', error);
-                    audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i><span>Enable Audio</span>';
-                    audioBtn.classList.remove('playing');
-                });
-            } else {
-                backgroundAudio.pause();
-                audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i><span>Audio Off</span>';
-                audioBtn.classList.remove('playing');
-                console.log('🔇 Background audio paused');
-            }
-        });
-
-        // Ensure button shows muted state initially
-        audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i><span>Enable Audio</span>';
-        audioBtn.classList.remove('playing');
-        console.log('🎵 Background audio initialized');
->>>>>>> d6cad1288a395d72af0b4da90593e7cb576854a3
     }
+
+    // Initialize audio element defaults and click handler
+    backgroundAudio.volume = defaultVolume;
+    backgroundAudio.loop = true;
+
+    
 
     function loadAudioIfNeeded() {
         if (!backgroundAudio.src && backgroundAudio.dataset && backgroundAudio.dataset.src) {
@@ -248,12 +215,12 @@ function initBackgroundAudio() {
     setButtonState(false);
     console.log('🎵 Background audio initialized (lazy, user-triggered)');
 }
-}
 
 // Video intro functionality
 function initVideoIntro() {
     console.log('🎬 initVideoIntro function called');
     const videoIntro = document.getElementById('videoIntro');
+    const introVideo = document.getElementById('introVideo');
     const loadingProgress = document.querySelector('.loading-progress');
     
     if (videoIntro && introVideo) {
@@ -322,26 +289,6 @@ function initVideoIntro() {
         });
         
         console.log('🎬 Video intro initialized');
-    }
-}
-
-// Transition to main site
-function transitionToMainSite() {
-    const videoIntro = document.getElementById('videoIntro');
-    const audioBtn = document.getElementById('playAudioBtn');
-    
-    if (videoIntro) {
-        console.log('🎬 Starting transition to main site');
-        
-        // Fade out video intro
-        videoIntro.classList.add('fade-out');
-        
-        // After fade animation, hide video intro
-        setTimeout(() => {
-            videoIntro.style.display = 'none';
-            videoIntro.classList.remove('fade-out');
-            console.log('🎬 Transition to main site complete');
-        }, 2000); // Match the CSS transition duration
     }
 }
 
@@ -555,12 +502,6 @@ function startAudioOnInteraction() {
     }
 }
 
-<<<<<<< HEAD
-
-
-// Enhanced interactive effects
-document.addEventListener('DOMContentLoaded', function() {
-=======
 // --- Global State and Cached Elements ---
 const AppState = {
     contentSections: null,
@@ -574,28 +515,33 @@ document.addEventListener('DOMContentLoaded', function() {
     AppState.contentSections = document.querySelectorAll('.content-section');
     AppState.navTabs = document.querySelectorAll('.nav-tab');
 
-    // Initialize all modules
-    initVideoIntro();
-    initBackgroundAudio();
-    initInitiateSequence();
-    initLazyLoading();
-    initNavigation();
-    initInteractiveEffects();
-    initClickableEntries();
-    initMobileNavigation();
-    listAvailableVoices();
+    // Initialize all modules (guard calls that may not exist in older builds)
+    if (typeof initVideoIntro === 'function') initVideoIntro();
+    if (typeof initBackgroundAudio === 'function') initBackgroundAudio();
+    if (typeof initInitiateSequence === 'function') initInitiateSequence();
+    if (typeof initLazyLoading === 'function') initLazyLoading();
+    if (typeof initNavigation === 'function') initNavigation();
+    if (typeof initInteractiveEffects === 'function') initInteractiveEffects();
+    if (typeof initClickableEntries === 'function') initClickableEntries();
+    if (typeof initMobileNavigation === 'function') initMobileNavigation();
+    if (typeof listAvailableVoices === 'function') listAvailableVoices();
+
+    // Initialize with About section
+    if (typeof showSection === 'function') showSection('about');
 });
 
 // --- Navigation ---
 function initNavigation() {
     // Add click event listeners to nav tabs using cached elements
-    AppState.navTabs.forEach(tab => {
-        tab.addEventListener('click', function(e) {
-            e.preventDefault();
-            const sectionId = this.getAttribute('data-section');
-            showSection(sectionId);
+    if (AppState.navTabs) {
+        AppState.navTabs.forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                e.preventDefault();
+                const sectionId = this.getAttribute('data-section');
+                showSection(sectionId);
+            });
         });
-    });
+    }
 
     // Handle anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -605,9 +551,6 @@ function initNavigation() {
             showSection(targetId);
         });
     });
-
-    // Initialize with About section
-    showSection('about');
 }
 
 // Global function to show section - accessible from anywhere
@@ -644,7 +587,6 @@ function showSection(sectionId) {
 
 // --- Enhanced Interactive Effects ---
 function initInteractiveEffects() {
->>>>>>> d6cad1288a395d72af0b4da90593e7cb576854a3
     // Add hover effects to cards
     const cards = document.querySelectorAll('.experience-card, .project-card, .education-card, .contact-card');
     
