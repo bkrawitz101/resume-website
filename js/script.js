@@ -597,6 +597,9 @@ function initAudioExperience() {
     return audio.play().then(() => {
         status.textContent = '';
         if (typeof DEBUG !== 'undefined' && DEBUG) console.log('Audio play succeeded', { audio });
+        // Mark that audio has been started by the user gesture
+        window.__audioWasStarted = true;
+        window.__primaryAudio = audio;
         return true;
     }).catch(err => {
         // Show subtle user-facing message
@@ -605,6 +608,63 @@ function initAudioExperience() {
         return false;
     });
 }
+
+// Helper to get the primary audio element (bg-audio preferred)
+function getPrimaryAudio() {
+    return document.getElementById('bg-audio') || document.getElementById('backgroundAudio') || window.__primaryAudio || null;
+}
+
+// Tracks whether INITIATE has started audio
+window.__audioWasStarted = window.__audioWasStarted || false;
+window.__primaryAudio = window.__primaryAudio || null;
+
+// Update the audio toggle UI
+function updateAudioToggleUI(isPlaying) {
+    const toggle = document.getElementById('audio-toggle');
+    if (!toggle) return;
+    if (isPlaying) {
+        toggle.innerHTML = '<i class="fas fa-volume-up"></i><span>Audio: On</span>';
+        toggle.setAttribute('aria-pressed', 'true');
+        toggle.classList.add('playing');
+    } else {
+        toggle.innerHTML = '<i class="fas fa-volume-mute"></i><span>Audio: Off</span>';
+        toggle.setAttribute('aria-pressed', 'false');
+        toggle.classList.remove('playing');
+    }
+}
+
+// Audio toggle click handler
+document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.getElementById('audio-toggle');
+    if (!toggle) return;
+    toggle.addEventListener('click', function() {
+        const audio = getPrimaryAudio();
+        if (!audio) {
+            showUserNotice('Audio unavailable.');
+            return;
+        }
+
+        // Do not start audio if INITIATE hasn't been used
+        if (!window.__audioWasStarted && audio.paused) {
+            showUserNotice('Click INITIATE SEQUENCE to enable audio');
+            return;
+        }
+
+        if (audio.paused) {
+            audio.play().then(() => {
+                updateAudioToggleUI(true);
+            }).catch(err => {
+                updateAudioToggleUI(false);
+                if (typeof DEBUG !== 'undefined' && DEBUG) console.error('Audio toggle play failed:', err);
+                showUserNotice('Audio unavailable, experience continues silently.');
+            });
+        } else {
+            audio.pause();
+            try { audio.currentTime = 0; } catch(e){}
+            updateAudioToggleUI(false);
+        }
+    });
+});
 
 // Simple user-facing notice (subtle) for audio fallback/errors
 function showUserNotice(message, timeout = 4000) {

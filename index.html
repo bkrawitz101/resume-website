@@ -87,9 +87,13 @@
     
     <!-- Audio Control Button -->
     <div id="audioControl" class="audio-control">
-        <button id="playAudioBtn" class="audio-btn">
+        <button id="playAudioBtn" class="audio-btn" aria-hidden="true" style="display:none;">
             <i class="fas fa-volume-mute"></i>
             <span>Enable Audio</span>
+        </button>
+        <button id="audio-toggle" class="audio-btn" aria-pressed="false">
+            <i class="fas fa-volume-mute"></i>
+            <span>Audio: Off</span>
         </button>
     </div>
 
