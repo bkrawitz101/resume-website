@@ -1,5 +1,9 @@
+// Debug flag (true only when ?debug=1)
+const DEBUG = (new URLSearchParams(window.location.search).get('debug') === '1');
+function debugLog(...args) { if (DEBUG) console.log(...args); }
+
 // Simple test to see if JavaScript is running
-console.log('🧪 JavaScript file loaded successfully');
+debugLog('🧪 JavaScript file loaded successfully');
 
 // --- Video & Asset Lazy Loading ---
 function initLazyLoading() {
@@ -213,7 +217,7 @@ function initBackgroundAudio() {
 
     // Set initial button state
     setButtonState(false);
-    console.log('🎵 Background audio initialized (lazy, user-triggered)');
+    debugLog('🎵 Background audio initialized (lazy, user-triggered)');
 }
 
 // Video intro functionality
@@ -294,7 +298,7 @@ function initVideoIntro() {
 
 // Initiate Sequence functionality
 function initInitiateSequence() {
-    console.log('🔧 Initiate sequence function called');
+    debugLog('🔧 Initiate sequence function called');
     const initiateSequence = document.getElementById('initiateSequence');
     const videoIntro = document.getElementById('videoIntro');
     const introVideo = document.getElementById('introVideo');
@@ -345,8 +349,12 @@ function initInitiateSequence() {
                         }
                     }
                 } catch (error) {
-                    // Fail gracefully for users; log full error to console for developers only
-                    console.error('🎵 Audio failed to start on initiate click:', error);
+                    // Fail gracefully for users; log full error to console only in debug mode
+                    if (typeof DEBUG !== 'undefined' && DEBUG) {
+                        console.error('🎵 Audio failed to start on initiate click:', error);
+                    } else {
+                        console.warn('🎵 Audio failed to start (user-facing message shown)');
+                    }
                     showUserNotice('Audio unavailable — experience continues silently');
                     if (audioBtn) {
                         audioBtn.setAttribute('aria-disabled', 'true');
@@ -517,7 +525,7 @@ const AppState = {
 };
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 DOM Content Loaded - Starting initialization');
+    debugLog('🚀 DOM Content Loaded - Starting initialization');
 
     // Cache DOM elements
     AppState.contentSections = document.querySelectorAll('.content-section');
