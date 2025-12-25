@@ -53,66 +53,180 @@ function initBackgroundAudio() {
     const backgroundAudio = document.getElementById('backgroundAudio');
     const audioBtn = document.getElementById('playAudioBtn');
     
-    if (backgroundAudio && audioBtn) {
-        // Set volume to a subtle level
-        backgroundAudio.volume = 0.3;
-        
-        // Ensure audio loops
-        backgroundAudio.loop = true;
-        
-        // Audio control button functionality
-        audioBtn.addEventListener('click', function() {
-            console.log('🎵 Audio button clicked');
-            console.log('🎵 Audio paused state:', backgroundAudio.paused);
-            console.log('🎵 Audio readyState:', backgroundAudio.readyState);
-            
-            if (backgroundAudio.paused) {
-                console.log('🎵 Attempting to play audio...');
-                // Start playing
-                backgroundAudio.play().then(() => {
-                    console.log('🎵 Audio play successful');
-                    audioBtn.innerHTML = '<i class="fas fa-volume-up"></i><span>Audio On</span>';
-                    audioBtn.classList.add('playing');
-                    console.log('🎵 Background audio started successfully');
-                }).catch(function(error) {
-                    console.log('🎵 Background audio play failed:', error.name, error.message);
-                    audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i><span>Enable Audio</span>';
-                    audioBtn.classList.remove('playing');
-                });
-            } else {
-                console.log('🎵 Pausing audio...');
-                // Pause playing
-                backgroundAudio.pause();
-                audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i><span>Audio Off</span>';
-                audioBtn.classList.remove('playing');
-                console.log('🔇 Background audio paused');
+    if (!backgroundAudio || !audioBtn) return;
+
+    // Use data-src attribute so audio doesn't download until the user opts in.
+    const PREF_KEY = 'bk_audio_playing';
+    const defaultVolume = 0.3;
+    let fadeTimer = null;
+
+    // Monkeypatch the audio element's play() to handle AbortError races (play interrupted by pause).
+    (function installSafePlay(el){
+        if (!el) return;
+        if (el._safePlayInstalled) return;
+        const origPlay = el.play.bind(el);
+        el._safePlayInstalled = true;
+        el._playLock = false;
+        el.play = async function() {
+            if (el._playLock) {
+                // Another play in progress; wait briefly and return.
+                await new Promise(r=>setTimeout(r, 100));
             }
-        });
-        
-        // Try to play audio on page load (only if video intro is not active)
-        document.addEventListener('DOMContentLoaded', function() {
-            const videoIntro = document.getElementById('videoIntro');
-            // Only try autoplay if video intro is not present or hidden
-            if (!videoIntro || videoIntro.style.display === 'none') {
-                // Try to play audio (may be blocked by browser autoplay policy)
-                backgroundAudio.play().then(() => {
-                    audioBtn.innerHTML = '<i class="fas fa-volume-up"></i><span>Audio On</span>';
-                    audioBtn.classList.add('playing');
-                    console.log('🎵 Background audio autoplay successful');
-                }).catch(function(error) {
-                    console.log('Background audio autoplay blocked:', error);
-                    // Show button in muted state
-                    audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i><span>Enable Audio</span>';
-                });
+            el._playLock = true;
+            try {
+                const p = origPlay();
+                if (p && typeof p.then === 'function') {
+                    return p.catch(async (err)=>{
+                        if (err && err.name === 'AbortError') {
+                            // Retry once after a short delay
+                            console.warn('safePlay: AbortError detected, retrying');
+                            await new Promise(r=>setTimeout(r, 160));
+                            try {
+                                return await origPlay();
+                            } catch (e2) {
+                                throw e2;
+                            }
+                        }
+                        throw err;
+                    });
+                }
+                return p;
+            } finally {
+                el._playLock = false;
             }
-        });
-        
-        console.log('🎵 Background audio initialized');
+        };
+    })(backgroundAudio);
+
+    function setButtonState(playing) {
+        if (playing) {
+            audioBtn.innerHTML = '<i class="fas fa-volume-up"></i><span>Audio On</span>';
+            audioBtn.classList.add('playing');
+            audioBtn.setAttribute('aria-pressed', 'true');
+        } else {
+            audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i><span>Enable Audio</span>';
+            audioBtn.classList.remove('playing');
+            audioBtn.setAttribute('aria-pressed', 'false');
+        }
     }
+
+    function loadAudioIfNeeded() {
+        if (!backgroundAudio.src && backgroundAudio.dataset && backgroundAudio.dataset.src) {
+            // Respect Save-Data and very slow connections
+            const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+            if (conn && (conn.saveData || /2g/.test(conn.effectiveType || '')) ) {
+                console.log('🎵 Deferring audio load due to Save-Data or slow connection');
+                return false;
+            }
+            backgroundAudio.src = backgroundAudio.dataset.src;
+            backgroundAudio.load();
+            console.log('🎵 Background audio src set and loading');
+            return true;
+        }
+        return !!backgroundAudio.src;
+    }
+
+    function fadeVolumeTo(target, duration = 600) {
+        if (fadeTimer) clearInterval(fadeTimer);
+        const start = backgroundAudio.volume || 0;
+        const delta = target - start;
+        const steps = 20;
+        let current = 0;
+        fadeTimer = setInterval(() => {
+            current++;
+            const v = start + (delta * (current / steps));
+            backgroundAudio.volume = Math.max(0, Math.min(1, v));
+            if (current >= steps) {
+                clearInterval(fadeTimer);
+                fadeTimer = null;
+                backgroundAudio.volume = Math.round(target * 100) / 100;
+            }
+        }, Math.max(10, Math.floor(duration / steps)));
+    }
+
+    // Click handler: load audio if needed and toggle play/pause with fade
+    audioBtn.addEventListener('click', async function() {
+        console.log('🎵 Audio button clicked (improved)');
+        // Load audio only when user interacts (if not already loaded)
+        loadAudioIfNeeded();
+
+        if (backgroundAudio.paused) {
+            try {
+                // start muted then fade in
+                backgroundAudio.volume = 0;
+                backgroundAudio.loop = true;
+                await backgroundAudio.play();
+                fadeVolumeTo(defaultVolume, 800);
+                setButtonState(true);
+                localStorage.setItem(PREF_KEY, '1');
+                console.log('🎵 Background audio started');
+            } catch (err) {
+                console.log('🎵 Play failed:', err);
+                setButtonState(false);
+            }
+        } else {
+            // fade out then pause
+            fadeVolumeTo(0, 400);
+            setTimeout(() => {
+                backgroundAudio.pause();
+                setButtonState(false);
+                localStorage.setItem(PREF_KEY, '0');
+                console.log('🔇 Background audio paused (user)');
+            }, 420);
+        }
+    });
+
+    // Pause audio when page hidden to save resources; resume only if it was playing
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            if (!backgroundAudio.paused) {
+                backgroundAudio._wasPlayingBeforeHidden = true;
+                backgroundAudio.pause();
+                console.log('🎵 Paused audio due to page hidden');
+            }
+        } else {
+            if (backgroundAudio._wasPlayingBeforeHidden) {
+                loadAudioIfNeeded();
+                backgroundAudio.play().then(() => {
+                    fadeVolumeTo(defaultVolume, 500);
+                    console.log('🎵 Resumed audio after visibility');
+                }).catch(() => {
+                    console.log('🎵 Could not resume audio after visibility');
+                });
+                backgroundAudio._wasPlayingBeforeHidden = false;
+            }
+        }
+    });
+
+    // On first user interaction, if the user previously opted-in, load/play
+    function onFirstInteraction() {
+        window.removeEventListener('pointerdown', onFirstInteraction);
+        window.removeEventListener('keydown', onFirstInteraction);
+        window.removeEventListener('touchstart', onFirstInteraction);
+        if (localStorage.getItem(PREF_KEY) === '1') {
+            if (loadAudioIfNeeded()) {
+                backgroundAudio.play().then(() => {
+                    fadeVolumeTo(defaultVolume, 600);
+                    setButtonState(true);
+                    console.log('🎵 Auto-started audio based on saved preference');
+                }).catch(() => {
+                    console.log('🎵 Auto-start blocked by browser');
+                });
+            }
+        }
+    }
+    window.addEventListener('pointerdown', onFirstInteraction, { once: true });
+    window.addEventListener('keydown', onFirstInteraction, { once: true });
+    window.addEventListener('touchstart', onFirstInteraction, { once: true });
+
+    // Set initial button state
+    setButtonState(false);
+    console.log('🎵 Background audio initialized (lazy, user-triggered)');
+}
 }
 
 // Video intro functionality
 function initVideoIntro() {
+    console.log('🎬 initVideoIntro function called');
     const videoIntro = document.getElementById('videoIntro');
     const introVideo = document.getElementById('introVideo');
     const backgroundAudio = document.getElementById('backgroundAudio');
@@ -512,7 +626,7 @@ function initInitiateSequence() {
                         console.log('🎬 Starting video immediately after voice ends');
                         startVideoSequence();
                     };
-                    
+
                     speechSynth.speak(speechUtterance);
                 } else {
                     // Fallback if speech synthesis not available
@@ -968,99 +1082,7 @@ function startAudioOnInteraction() {
     }
 }
 
-// Initialize initiate sequence
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 DOM Content Loaded - Starting initialization');
-    initInitiateSequence();
-});
 
-// Listen for user interactions to start audio (fallback)
-document.addEventListener('click', startAudioOnInteraction, { once: true });
-document.addEventListener('mousedown', startAudioOnInteraction, { once: true });
-document.addEventListener('keydown', startAudioOnInteraction, { once: true });
-document.addEventListener('touchstart', startAudioOnInteraction, { once: true });
-
-// Global function to show section - accessible from anywhere
-function showSection(sectionId) {
-    console.log('🔄 showSection called with:', sectionId);
-    
-    // Find elements fresh each time to avoid scope issues
-    const contentSections = document.querySelectorAll('.content-section');
-    const navTabs = document.querySelectorAll('.nav-tab');
-    
-    console.log('🔄 Found content sections:', contentSections.length);
-    console.log('🔄 Found nav tabs:', navTabs.length);
-    
-    // Hide all sections
-    contentSections.forEach(section => {
-        section.classList.remove('active');
-        console.log('🔄 Removed active from section:', section.id);
-    });
-
-    // Remove active class from all nav tabs
-    navTabs.forEach(tab => {
-        tab.classList.remove('active');
-    });
-
-    // Show target section
-    const targetSection = document.getElementById(sectionId);
-    if (targetSection) {
-        targetSection.classList.add('active');
-        console.log('🔄 Added active to section:', sectionId);
-    } else {
-        console.error('❌ Section not found:', sectionId);
-    }
-
-    // Add active class to clicked nav tab
-    const activeTab = document.querySelector(`[data-section="${sectionId}"]`);
-    if (activeTab) {
-        activeTab.classList.add('active');
-        console.log('🔄 Added active to nav tab:', sectionId);
-    } else {
-        console.log('⚠️ Nav tab not found for section:', sectionId);
-    }
-}
-
-// Navigation functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const navTabs = document.querySelectorAll('.nav-tab');
-    const contentSections = document.querySelectorAll('.content-section');
-
-    // Add click event listeners to nav tabs
-    navTabs.forEach(tab => {
-        tab.addEventListener('click', function(e) {
-            e.preventDefault();
-            const sectionId = this.getAttribute('data-section');
-            showSection(sectionId);
-        });
-    });
-
-    // Add smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href').substring(1);
-            showSection(targetId);
-        });
-    });
-
-    // Simple project link handling - just let links work naturally
-    document.querySelectorAll('.project-link').forEach(link => {
-        link.addEventListener('click', function(e) {
-            // Let the link work normally - no interference
-            console.log('Link clicked:', this.href);
-        });
-    });
-
-    // Initialize with About section
-    showSection('about');
-    
-    // Update data-section attributes for portfolio
-    const portfolioTab = document.querySelector('[data-section="portfolio"]');
-    if (portfolioTab) {
-        portfolioTab.setAttribute('data-section', 'portfolio');
-    }
-});
 
 // Enhanced interactive effects
 document.addEventListener('DOMContentLoaded', function() {

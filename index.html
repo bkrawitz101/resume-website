@@ -40,9 +40,8 @@
         </div>
     </div>
 
-    <!-- Background Audio -->
-    <audio id="backgroundAudio" loop preload="auto">
-        <source src="assets/audio/Music.mp3" type="audio/mpeg">
+    <!-- Background Audio (lazy-loaded; user-triggered) -->
+    <audio id="backgroundAudio" loop preload="none" data-src="assets/audio/Music.mp3" aria-label="Vibration healing audio">
         Your browser does not support the audio element.
     </audio>
     
@@ -63,6 +62,7 @@
         </div>
 
         <!-- Header with Logo and Contact -->
+        <!--
         <header class="header">
             <div class="header-content">
                 <div class="header-card">
@@ -84,7 +84,6 @@
                     </div>
                 </div>
                 
-                <!-- Navigation Tabs -->
                 <nav class="top-nav neural">
                     <div class="nav-container">
                         <ul class="nav-tabs">
@@ -120,7 +119,6 @@
                             </li>
                         </ul>
                         
-                        <!-- Mobile Navigation Tree -->
                         <div class="mobile-nav-tree">
                             <div class="mobile-nav-main">
                                 <i class="fas fa-network-wired"></i>
@@ -154,6 +152,7 @@
                 </nav>
             </div>
         </header>
+        -->
 
         <!-- Main Content Area -->
         <main class="main-content">
@@ -1003,5 +1002,67 @@
     </div>
 
     <script src="js/script.js?v=16"></script>
+    <!-- Diagnostics panel: captures CSP violations and audio events for debugging -->
+    <div id="diagnostics" style="position:fixed;right:10px;bottom:10px;z-index:20000;background:rgba(0,0,0,0.85);color:#0ff;border:1px solid #0ff;padding:12px;border-radius:8px;max-width:360px;font-family:Arial, sans-serif;font-size:12px;"> 
+        <div style="font-weight:700;margin-bottom:6px;color:#fff;">Diagnostics</div>
+        <div id="diagLogs" style="height:180px;overflow:auto;padding:6px;border-radius:4px;background:#001; color:#0ff"></div>
+        <div style="margin-top:8px;display:flex;gap:6px;">
+            <button id="diagListScripts" style="flex:1;padding:6px">List Scripts</button>
+            <button id="diagPlayAudio" style="flex:1;padding:6px">Try Play</button>
+        </div>
+    </div>
+
+    <script>
+        (function(){
+            const logEl = id=>document.getElementById(id);
+            const append = msg=>{const l=logEl('diagLogs'); const time=new Date().toLocaleTimeString(); l.innerText = time+ ' — ' + msg + '\n' + l.innerText};
+
+            // Capture CSP violations
+            if ('onsecuritypolicyviolation' in document) {
+                document.addEventListener('securitypolicyviolation', function(e){
+                    append('CSP Violation: directive=' + e.violatedDirective + ' blockedURI=' + e.blockedURI + ' sourceFile=' + (e.sourceFile||'') );
+                    console.warn('CSP Violation', e);
+                });
+                append('CSP listener installed');
+            } else {
+                append('CSP events not supported in this browser');
+            }
+
+            // Audio debugging
+            const audio = document.getElementById('backgroundAudio');
+            const playBtn = document.getElementById('diagPlayAudio');
+            if (audio) {
+                ['loadstart','loadedmetadata','canplay','canplaythrough','play','playing','pause','error','stalled','suspend'].forEach(ev=>{
+                    audio.addEventListener(ev, function(evt){
+                        append('audio event: ' + ev + (evt && evt.type === 'error' ? ' (error code)' : ''));
+                    });
+                });
+                append('Audio element found; data-src=' + (audio.dataset && audio.dataset.src ? audio.dataset.src : '[no data-src]'));
+            } else append('No audio element found');
+
+            // List scripts
+            document.getElementById('diagListScripts').addEventListener('click', function(){
+                Array.from(document.scripts).forEach(s=>append('script: ' + (s.src||'[inline]') + (s.nonce?(' nonce='+s.nonce):'')));
+            });
+
+            // Try to load and play audio (used after a user gesture)
+            document.getElementById('diagPlayAudio').addEventListener('click', async function(){
+                append('User requested audio play test');
+                if (!audio) return append('No audio element');
+                if (!audio.src && audio.dataset && audio.dataset.src) { audio.src = audio.dataset.src; audio.load(); append('Set audio.src from data-src'); }
+                try {
+                    await audio.play();
+                    append('audio.play() succeeded');
+                } catch(err) {
+                    append('audio.play() failed: ' + (err && err.name ? err.name + ' - ' + err.message : err));
+                    console.error(err);
+                }
+            });
+
+            // Expose a simple global helper to copy logs
+            window.__diagCopy = function(){ const t=logEl('diagLogs').innerText; navigator.clipboard && navigator.clipboard.writeText(t); return t; };
+            append('Diagnostics ready — click "List Scripts" and reproduce the CSP/audio error, then click "Try Play" and paste logs here or use __diagCopy()');
+        })();
+    </script>
 </body>
 </html> 
