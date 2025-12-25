@@ -333,20 +333,10 @@ function initInitiateSequence() {
 
                 // Initialize audio experience on first user click and attempt playback
                 try {
-                    initAudioExperience();
-                    const bg = document.getElementById('backgroundAudio');
-                    if (bg && bg.paused) {
-                        // Load lazily and play as part of the user gesture
-                        if (!bg.src && bg.dataset && bg.dataset.src) {
-                            bg.src = bg.dataset.src;
-                            bg.load();
-                        }
-                        await bg.play();
-                        // If play succeeds, update UI
-                        if (audioBtn) {
-                            audioBtn.innerHTML = '<i class="fas fa-volume-up"></i><span>Audio On</span>';
-                            audioBtn.classList.add('playing');
-                        }
+                    const ok = await initAudioExperience();
+                    if (ok && audioBtn) {
+                        audioBtn.innerHTML = '<i class="fas fa-volume-up"></i><span>Audio On</span>';
+                        audioBtn.classList.add('playing');
                     }
                 } catch (error) {
                     // Fail gracefully for users; log full error to console only in debug mode
@@ -571,16 +561,49 @@ function initNavigation() {
 
 // Wrapper to initialize audio experience on first user gesture
 function initAudioExperience() {
-    try {
-        if (typeof initBackgroundAudio === 'function') {
-            initBackgroundAudio();
-            console.log('🎧 initAudioExperience: background audio initialized');
-            return true;
-        }
-    } catch (err) {
-        console.error('🎧 initAudioExperience failed:', err);
+    // Try multiple audio elements for compatibility with older code
+    const status = document.getElementById('audio-status');
+    const candidates = [
+        document.getElementById('bg-audio'),
+        document.getElementById('backgroundAudio')
+    ].filter(Boolean);
+
+    if (!candidates.length || !status) {
+        if (typeof DEBUG !== 'undefined' && DEBUG) console.error('Audio element or status element not found', { candidates, status });
+        return Promise.resolve(false);
     }
-    return false;
+
+    const audio = candidates[0];
+
+    // Normalize source: support <source src=> and data-src attributes
+    try {
+        const sourceEl = audio.querySelector && audio.querySelector('source');
+        if (!audio.src) {
+            if (sourceEl && sourceEl.getAttribute('src')) {
+                audio.src = sourceEl.getAttribute('src');
+            } else if (sourceEl && sourceEl.dataset && sourceEl.dataset.src) {
+                audio.src = sourceEl.dataset.src;
+            } else if (audio.dataset && audio.dataset.src) {
+                audio.src = audio.dataset.src;
+            }
+        }
+        // Ensure load() is called so the browser prepares the resource
+        audio.load();
+    } catch (e) {
+        if (typeof DEBUG !== 'undefined' && DEBUG) console.error('Audio load error', e);
+    }
+
+    // Attempt to play as part of the user gesture; return promise resolving true/false
+    return audio.play().then(() => {
+        status.textContent = '';
+        if (typeof DEBUG !== 'undefined' && DEBUG) console.log('Audio play succeeded', { audio });
+        return true;
+    }).catch(err => {
+        // Show subtle user-facing message
+        status.textContent = 'Audio unavailable, experience continues silently.';
+        if (typeof DEBUG !== 'undefined' && DEBUG) console.error('Audio play failed:', err, { audio });
+        return false;
+    });
 }
 
 // Simple user-facing notice (subtle) for audio fallback/errors

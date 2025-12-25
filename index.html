@@ -81,7 +81,7 @@
     </div>
 
     <!-- Background Audio (lazy-loaded; user-triggered) -->
-    <audio id="backgroundAudio" loop preload="none" data-src="/resume-website/assets/audio/Music.mp3" aria-label="Background audio">
+    <audio id="backgroundAudio" loop preload="none" data-src="assets/audio/Music_optimized.mp3" aria-label="Background audio">
         Your browser does not support the audio element.
     </audio>
     
@@ -1200,6 +1200,13 @@
             append('Diagnostics ready');
         })();
     </script>
+
+    <!-- Background audio element used by initAudioExperience() -->
+    <audio id="bg-audio" preload="none">
+        <source src="assets/audio/Music_optimized.mp3" type="audio/mpeg">
+        <!-- If you want to use a different file, replace the src above with "assets/audio/bg-track.mp3" or add your file to assets/audio/ -->
+    </audio>
+    <div id="audio-status" class="audio-status" aria-live="polite" style="position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:20001;pointer-events:none;font-size:13px;color:#fff;"></div>
 
     <script src="js/script.js?v=21"></script>
 </body>
