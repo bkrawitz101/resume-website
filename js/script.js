@@ -315,7 +315,7 @@ function initInitiateSequence() {
         console.log('🔧 Flashing box found:', !!flashingBox);
         
         if (flashingBox) {
-            flashingBox.addEventListener('click', function() {
+            flashingBox.addEventListener('click', async function() {
                 console.log('🚀 Initiate sequence clicked');
                 
                 // Change button text and add flashing red effect
@@ -327,22 +327,30 @@ function initInitiateSequence() {
                 // Add 'activated' class to apply styles from CSS
                 flashingBox.classList.add('activated');
 
-                // --- KEY CHANGE: Attempt to play audio on the first user click ---
-                if (backgroundAudio && backgroundAudio.paused) {
-                    backgroundAudio.load(); // Explicitly load the audio before playing
-                    backgroundAudio.play().then(() => {
-                        console.log('🎵 Audio playback started successfully.');
+                // Initialize audio experience on first user click and attempt playback
+                try {
+                    initAudioExperience();
+                    const bg = document.getElementById('backgroundAudio');
+                    if (bg && bg.paused) {
+                        // Load lazily and play as part of the user gesture
+                        if (!bg.src && bg.dataset && bg.dataset.src) {
+                            bg.src = bg.dataset.src;
+                            bg.load();
+                        }
+                        await bg.play();
+                        // If play succeeds, update UI
                         if (audioBtn) {
                             audioBtn.innerHTML = '<i class="fas fa-volume-up"></i><span>Audio On</span>';
                             audioBtn.classList.add('playing');
                         }
-                    }).catch(error => {
-                        console.error('🎵 Audio failed to play on initial click:', error);
-                        if (audioBtn) {
-                            audioBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Audio Error</span>';
-                            audioBtn.disabled = true;
-                        }
-                    });
+                    }
+                } catch (error) {
+                    // Fail gracefully for users; log full error to console for developers only
+                    console.error('🎵 Audio failed to start on initiate click:', error);
+                    showUserNotice('Audio unavailable — experience continues silently');
+                    if (audioBtn) {
+                        audioBtn.setAttribute('aria-disabled', 'true');
+                    }
                 }
                 
                 // Voice announcement
@@ -517,7 +525,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize all modules (guard calls that may not exist in older builds)
     if (typeof initVideoIntro === 'function') initVideoIntro();
-    if (typeof initBackgroundAudio === 'function') initBackgroundAudio();
+    // Audio initialization is deferred until an explicit user gesture
     if (typeof initInitiateSequence === 'function') initInitiateSequence();
     if (typeof initLazyLoading === 'function') initLazyLoading();
     if (typeof initNavigation === 'function') initNavigation();
@@ -551,6 +559,37 @@ function initNavigation() {
             showSection(targetId);
         });
     });
+}
+
+// Wrapper to initialize audio experience on first user gesture
+function initAudioExperience() {
+    try {
+        if (typeof initBackgroundAudio === 'function') {
+            initBackgroundAudio();
+            console.log('🎧 initAudioExperience: background audio initialized');
+            return true;
+        }
+    } catch (err) {
+        console.error('🎧 initAudioExperience failed:', err);
+    }
+    return false;
+}
+
+// Simple user-facing notice (subtle) for audio fallback/errors
+function showUserNotice(message, timeout = 4000) {
+    try {
+        const existing = document.getElementById('userNotice');
+        if (existing) {
+            existing.textContent = message;
+            return;
+        }
+        const n = document.createElement('div');
+        n.id = 'userNotice';
+        n.textContent = message;
+        n.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.8);color:#fff;padding:10px 14px;border-radius:8px;font-size:13px;z-index:20000;backdrop-filter:blur(4px);';
+        document.body.appendChild(n);
+        setTimeout(() => { n.style.transition = 'opacity 300ms'; n.style.opacity = '0'; setTimeout(()=>{ if(n.parentNode) n.parentNode.removeChild(n); }, 300); }, timeout);
+    } catch (e) { console.error('showUserNotice error', e); }
 }
 
 // Global function to show section - accessible from anywhere
